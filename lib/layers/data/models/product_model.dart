@@ -7,8 +7,9 @@ class ProductModel extends Product {
   final String name;
   final String image;
   final int price;
-  final int qty;
+  int qty;
   int isFavorite;
+  int isSelected;
   BrandModel brand;
 
   ProductModel({
@@ -19,6 +20,7 @@ class ProductModel extends Product {
     this.price,
     this.qty,
     this.isFavorite,
+    this.isSelected,
     this.brand,
   });
 
@@ -35,8 +37,9 @@ class ProductModel extends Product {
       name : json['name'],
       image : json['image'],
       price : json['price'],
-      // qty : json['qty'],
+      qty : json['qty'],
       isFavorite : json['is_favorite'],
+      isSelected : json['is_selected'],
       brand : brand,
     );
   }
@@ -54,9 +57,10 @@ class ProductModel extends Product {
       'name' : name,
       'image' : image,
       'price' : price,
-      // 'qty' : qty,
-      // 'is_favorite' : isFavorite,
-      // 'brand' : brand,
+      'qty' : qty,
+      'is_favorite' : isFavorite,
+      'is_selected' : isSelected,
+      'brand' : brand,
     };
   }
 }

@@ -1,35 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
+import 'package:store_app/layers/domain/entities/product.dart';
+import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 
 class ItemCartProduct extends StatefulWidget {
-  // final Shoes shoes;
-  // final List<ExchangeRate> exchangeRates;
+  final Product product;
   final Function onPressed;
+  final bool isSelected;
 
-  const ItemCartProduct({Key key, this.onPressed}) : super(key: key);
+  const ItemCartProduct({Key key, this.onPressed, this.product, this.isSelected}) : super(key: key);
 
   @override
   _ItemCartProductState createState() => _ItemCartProductState();
 }
 
 class _ItemCartProductState extends State<ItemCartProduct> {
-  bool isChecked = false;
+  bool isSelected = false;
   int quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isSelected != null) {
+      isSelected = widget.isSelected;
+    }
+
+    if (widget.product != null) {
+      // isSelected = widget.product.isSelected == 1;
+      quantity = widget.product.qty;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onPressed ?? () { },
       child: Container(
+        color: Colors.transparent,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Checkbox(
               activeColor: colorPrimary,
-              value: isChecked,
+              value: isSelected,
               onChanged: (value) {
-                setState(() => isChecked = value);
+                context.read<CartNotifier>().updateCart(
+                  id: widget.product.id.toString(),
+                  isSelected: value,
+                  qty: quantity
+                );
+                if (value) {
+                  context.read<CartNotifier>().addSelected(widget.product.id);
+                }
+                else {
+                  context.read<CartNotifier>().removeSelected(widget.product.id);
+                }
+                setState(() => isSelected = value);
               }
             ),
 
@@ -47,28 +76,15 @@ class _ItemCartProductState extends State<ItemCartProduct> {
                       ),
                       InkWell(
                         onTap: () {
-
+                          context.read<CartNotifier>().deleteCart(id: widget.product.id.toString());
                         },
+                        borderRadius: BorderRadius.circular(20.0),
                         child: Padding(
                           padding: EdgeInsets.all(4),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete_outline,
-                                size: 20.0,
-                                color: Colors.red,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                "Delete",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
+                          child: Icon(
+                            Icons.delete_outline,
+                            size: 20.0,
+                            color: Colors.red,
                           ),
                         ),
                       )
@@ -101,7 +117,9 @@ class _ItemCartProductState extends State<ItemCartProduct> {
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: Image.asset(
-            "assets/images/no_image.png",
+            widget.product == null
+              ? "assets/images/no_image.png"
+              : widget.product.image,
             fit: BoxFit.cover,
           ),
         ),
@@ -116,7 +134,7 @@ class _ItemCartProductState extends State<ItemCartProduct> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Title",
+            widget.product == null ? "" : widget.product.name,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -127,7 +145,7 @@ class _ItemCartProductState extends State<ItemCartProduct> {
 
           SizedBox(height: 4),
           Text(
-            "Rp",
+            App.currency(context, widget.product == null ? 0 : widget.product.price),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -151,7 +169,17 @@ class _ItemCartProductState extends State<ItemCartProduct> {
             color: quantity == 1 ? Colors.grey : colorPrimary,
           ),
           onPressed: () {
-            if (quantity > 1) setState(() => quantity = quantity - 1);
+            if (quantity > 1) {
+              context.read<CartNotifier>().updateCart(
+                id: widget.product.id.toString(),
+                isSelected: isSelected,
+                qty: quantity - 1
+              ).then((status) {
+                if (status != null) {
+                  setState(() => quantity = quantity - 1);
+                }
+              });
+            }
           },
         ),
 
@@ -177,7 +205,15 @@ class _ItemCartProductState extends State<ItemCartProduct> {
             color: colorPrimary,
           ),
           onPressed: () {
-            setState(() => quantity = quantity + 1);
+            context.read<CartNotifier>().updateCart(
+              id: widget.product.id.toString(),
+              isSelected: isSelected,
+              qty: quantity + 1
+            ).then((status) {
+              if (status != null) {
+                setState(() => quantity = quantity + 1);
+              }
+            });
           },
         ),
       ],

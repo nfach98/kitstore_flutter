@@ -12,19 +12,17 @@ abstract class ProductLocalDataSource {
 
   Future<List<ProductModel>> getFavoriteProducts({int page, int limit});
 
-  // Future<int> addPeople({required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender});
-  //
-  // Future<int> updatePeople({required String id, required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender});
-  //
-  // Future<int> deletePeople({required String id});
-  //
-  // Future<int> isFavorite({required String id});
-  //
+  Future<List<ProductModel>> getCartProducts();
+
   Future<int> addFavorite({String id});
 
   Future<int> deleteFavorite({String id});
-  //
-  // Future<List<PeopleModel>> getFavorites();
+
+  Future<int> addCart({String id, int qty});
+
+  Future<int> updateCart({String id, bool isSelected, int qty});
+
+  Future<int> deleteCart({String id, String idBrand});
 }
 
 class ProductLocalDataSourceImpl implements ProductLocalDataSource {
@@ -128,6 +126,41 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   }
 
   @override
+  Future<List<ProductModel>> getCartProducts() async {
+    var dbClient = await helper.db;
+    var prefs = await SharedPreferences.getInstance();
+    String stringValue = prefs.getString('user');
+
+    Map<String, dynamic> user = {};
+    if (stringValue != null) {
+      user = json.decode(stringValue) as Map<String, dynamic>;
+    }
+
+    List<Map<String, dynamic>> maps = await dbClient.rawQuery("""
+      SELECT p.id, p.id_brand, p.name, p.image, p.price, cp.qty, cp.is_selected FROM cart_products cp
+      INNER JOIN products p ON p.id = cp.id_product
+      WHERE cp.id_user = ${user["id"]}
+      ORDER BY cp.id DESC
+    """);
+
+    List<ProductModel> products = [];
+    for (Map<String, dynamic> map in maps) {
+      var prod = ProductModel.fromJson(map);
+      List<Map<String, dynamic>> mapBrand = await dbClient.query('brands',
+        where: "id = ?",
+        whereArgs: [prod.idBrand]
+      );
+      if (mapBrand.isNotEmpty) {
+        prod.brand = BrandModel.fromJson(mapBrand.first);
+      }
+
+      products.add(prod);
+    }
+
+    return products;
+  }
+
+  @override
   Future<int> addFavorite({String id}) async {
     var dbClient = await helper.db;
     var prefs = await SharedPreferences.getInstance();
@@ -165,126 +198,101 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     );
   }
 
-  // @override
-  // Future<int> isFavorite({required String id}) async {
-  //   var dbClient = await helper.db;
-  //   var prefs = await SharedPreferences.getInstance();
-  //   String? stringValue = prefs.getString('user');
-  //
-  //   Map<String, dynamic> user = {};
-  //   if (stringValue != null) user = json.decode(stringValue);
-  //   print(user["id"]);
-  //
-  //   List<Map<String, dynamic>> maps = await dbClient!.query('favorites',
-  //       where: "id_people = ? AND id_user = ?",
-  //       whereArgs: [id, user["id"]]
-  //   );
-  //   return maps.isNotEmpty ? 1 : 0;
-  // }
-  //
-  // @override
-  // Future<int> addPeople({required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender}) async {
-  //   var dbClient = await helper.db;
-  //   var map = {
-  //     'name' : name,
-  //     'height' : height,
-  //     'mass' : mass,
-  //     'hair_color' : hairColor,
-  //     'skin_color' : skinColor,
-  //     'birth_year' : birthYear,
-  //     'gender' : gender
-  //   };
-  //
-  //   return await dbClient!.insert('peoples', map);
-  // }
-  //
-  // @override
-  // Future<int> updatePeople({required String id, required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender}) async {
-  //   var dbClient = await helper.db;
-  //   var map = {
-  //     'name' : name,
-  //     'height' : height,
-  //     'mass' : mass,
-  //     'hair_color' : hairColor,
-  //     'skin_color' : skinColor,
-  //     'birth_year' : birthYear,
-  //     'gender' : gender
-  //   };
-  //
-  //   return await dbClient!.update(
-  //     'peoples',
-  //     map,
-  //     where: 'id = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
-  //
-  // @override
-  // Future<int> deletePeople({required String id}) async {
-  //   var dbClient = await helper.db;
-  //   return await dbClient!.delete(
-  //     'peoples',
-  //     where: 'id = ?',
-  //     whereArgs: [id],
-  //   );
-  // }
-  //
-  // @override
-  // Future<int> addFavorite({required String id}) async {
-  //   var dbClient = await helper.db;
-  //   var prefs = await SharedPreferences.getInstance();
-  //   String? stringValue = prefs.getString('user');
-  //
-  //   Map<String, dynamic> user = {};
-  //   if (stringValue != null) user = json.decode(stringValue);
-  //   print(user["id"]);
-  //
-  //   var map = {
-  //     'id_people' : id,
-  //     'id_user' : user["id"]
-  //   };
-  //
-  //   return await dbClient!.insert('favorites', map);
-  // }
-  //
-  // @override
-  // Future<int> deleteFavorite({required String id}) async {
-  //   var dbClient = await helper.db;
-  //   var prefs = await SharedPreferences.getInstance();
-  //   String? stringValue = prefs.getString('user');
-  //
-  //   Map<String, dynamic> user = {};
-  //   if (stringValue != null) user = json.decode(stringValue);
-  //   print(user["id"]);
-  //
-  //   return await dbClient!.delete(
-  //     'favorites',
-  //     where: 'id_people = ? AND id_user = ?',
-  //     whereArgs: [id, user["id"]],
-  //   );
-  // }
-  //
-  // @override
-  // Future<List<PeopleModel>> getFavorites() async {
-  //   var dbClient = await helper.db;
-  //   var prefs = await SharedPreferences.getInstance();
-  //   String? stringValue = prefs.getString('user');
-  //
-  //   Map<String, dynamic> user = {};
-  //   if (stringValue != null) user = json.decode(stringValue);
-  //   print(user["id"]);
-  //
-  //   List<Map<String, dynamic>> maps = await dbClient!.rawQuery("""
-  //     SELECT p.* from favorites f
-  //     INNER JOIN peoples p ON p.id = f.id
-  //     WHERE f.id_user = ${user["id"]}
-  //   """);
-  //
-  //   List<PeopleModel> peoples = [];
-  //   for (Map<String, dynamic> map in maps) {
-  //     peoples.add(PeopleModel.fromJson(map));
-  //   }
-  //
-  //   return peoples;
-  // }
+  @override
+  Future<int> addCart({String id, int qty}) async {
+    var dbClient = await helper.db;
+    var prefs = await SharedPreferences.getInstance();
+    String stringValue = prefs.getString('user');
+
+    Map<String, dynamic> user = {};
+    if (stringValue != null) {
+      user = json.decode(stringValue) as Map<String, dynamic>;
+    }
+
+    List<Map<String, dynamic>> maps = await dbClient.query('cart_products',
+      where: "id_product = ? AND id_user = ?",
+      whereArgs: [id, user["id"]]
+    );
+
+    if (maps.isEmpty) {
+      var map = {
+        'id_product' : id,
+        'id_user' : user["id"],
+        'is_selected': 0,
+        'qty' : qty
+      };
+
+      return await dbClient.insert('cart_products', map);
+    }
+
+    else {
+      var map = {
+        'qty' : qty,
+        'is_selected': maps.first["is_selected"]
+      };
+
+      return await dbClient.update(
+        'cart_products',
+        map,
+        where: "id_product = ? AND id_user = ?",
+        whereArgs: [id, user["id"]]
+      );
+    }
+  }
+
+  @override
+  Future<int> updateCart({String id, String idBrand, bool isSelected, int qty}) async {
+    var dbClient = await helper.db;
+    var prefs = await SharedPreferences.getInstance();
+    String stringValue = prefs.getString('user');
+
+    Map<String, dynamic> user = {};
+    if (stringValue != null) {
+      user = json.decode(stringValue) as Map<String, dynamic>;
+    }
+
+    var map = {
+      'is_selected' : isSelected ? 1 : 0,
+      'qty': qty
+    };
+
+    return await dbClient.update(
+      'cart_products',
+      map,
+      where: "id_product = ? AND id_user = ?",
+      whereArgs: [id, user["id"]]
+    );
+  }
+
+  @override
+  Future<int> deleteCart({String id, String idBrand}) async {
+    var dbClient = await helper.db;
+    var prefs = await SharedPreferences.getInstance();
+    String stringValue = prefs.getString('user');
+
+    Map<String, dynamic> user = {};
+    if (stringValue != null) {
+      user = json.decode(stringValue) as Map<String, dynamic>;
+    }
+
+    if (idBrand != null) {
+      List<Map<String, dynamic>> maps = await dbClient.rawQuery("""
+      DELETE FROM cart_products
+      WHERE id_product IN (
+        SELECT p.id FROM cart_products cp
+        INNER JOIN products p ON p.id = cp.id_product
+        WHERE cp.id_user = ${user["id"]} AND p.id_brand = $idBrand
+      )
+    """);
+
+      return maps.length;
+    }
+    else {
+      return await dbClient.delete(
+        'cart_products',
+        where: 'id_product = ? AND id_user = ?',
+        whereArgs: [id, user["id"]],
+      );
+    }
+  }
 }

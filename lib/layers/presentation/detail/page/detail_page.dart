@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
+import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
+import 'package:store_app/layers/presentation/detail/widget/bottom_sheet_cart.dart';
+import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
+import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:store_app/layers/presentation/store_app_button.dart';
 
 class DetailPage extends StatefulWidget {
@@ -14,6 +19,20 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  int isFavorite = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      context.read<DetailNotifier>().getProducts();
+    });
+
+    if (widget.product != null) {
+      isFavorite = widget.product.isFavorite;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,10 +105,31 @@ class _DetailPageState extends State<DetailPage> {
           icon: Icon(
             Icons.favorite,
             size: 24.0,
-            color: Colors.grey,
+            color: isFavorite == 1 ? Colors.pink : Colors.grey,
           ),
           onPressed: () {
+            if (widget.product != null) {
+              var future;
 
+              if (widget.product.isFavorite == 0) {
+                future = context.read<DetailNotifier>().addFavorite(id: widget.product.id.toString());
+              }
+              else {
+                future = context.read<DetailNotifier>().deleteFavorite(id: widget.product.id.toString());
+              }
+
+              future.then((status) {
+                if (status != null) {
+                  context.read<CatalogueNotifier>().updateProduct(
+                    id: widget.product.id,
+                    isFavorite: isFavorite == 1 ? 0 : 1
+                  );
+                  context.read<FavoriteNotifier>().reset();
+                  context.read<FavoriteNotifier>().getProducts();
+                  setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
+                }
+              });
+            }
           },
         )
       ],
@@ -175,7 +215,34 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
       onPressed: () {
+        showBottomSheetCart();
+      },
+    );
+  }
 
+  showBottomSheetCart() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20)
+                ),
+              ),
+              child: BottomSheetCart(
+                product: widget.product,
+              )
+            )
+          ],
+        );
       },
     );
   }

@@ -8,17 +8,15 @@ abstract class ProductRepository {
 
   Future<Either<Failure, List<Product>>> getFavoriteProducts({int page, int limit});
 
+  Future<Either<Failure, List<Product>>> getCartProducts();
+
   Future<Either<Failure, int>> addFavorite({String id});
 
   Future<Either<Failure, int>> deleteFavorite({String id});
 
-  // Future<Either<Failure, int>> addPeople({required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender});
-  //
-  // Future<Either<Failure, int>> updatePeople({required String id, required String name, required String height, required String mass, required String hairColor, required String skinColor, required String birthYear, required String gender});
-  //
-  // Future<Either<Failure, int>> deletePeople({required String id});
-  //
-  // Future<Either<Failure, int>> isFavorite({required String id});
-  //
-  // Future<Either<Failure, List<People>>> getFavorites();
+  Future<Either<Failure, int>> addCart({String id, int qty});
+
+  Future<Either<Failure, int>> updateCart({String id, bool isSelected, int qty});
+
+  Future<Either<Failure, int>> deleteCart({String id, String idBrand});
 }

@@ -65,6 +65,7 @@ class SQLiteHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         id_product INTEGER NOT NULL,
         id_user INTEGER NOT NULL,
+        is_selected INTEGER NOT NULL,
         qty INTEGER NOT NULL,
         FOREIGN KEY (id_product) REFERENCES products (id) ON UPDATE CASCADE ON DELETE CASCADE,
         FOREIGN KEY (id_user) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE

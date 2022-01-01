@@ -46,9 +46,12 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Image.asset(
-                        "assets/images/icon_black.png",
-                        height: 120,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Image.asset(
+                          "assets/images/logo_long_color.png",
+                          height: 120,
+                        ),
                       ),
                       SizedBox(height: 20),
 

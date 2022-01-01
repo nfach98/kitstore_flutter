@@ -41,6 +41,13 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
+  Future<Either<Failure, List<Product>>> getCartProducts() async {
+    return await _getProducts(() async {
+      return localDataSource.getCartProducts();
+    });
+  }
+
+  @override
   Future<Either<Failure, int>> addFavorite({String id}) async {
     return await _getInt(() async {
       return localDataSource.addFavorite(id: id);
@@ -51,6 +58,37 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Either<Failure, int>> deleteFavorite({String id}) async {
     return await _getInt(() async {
       return localDataSource.deleteFavorite(id: id);
+    });
+  }
+
+  @override
+  Future<Either<Failure, int>> addCart({String id, int qty}) async {
+    return await _getInt(() async {
+      return localDataSource.addCart(
+        id: id,
+        qty: qty
+      );
+    });
+  }
+
+  @override
+  Future<Either<Failure, int>> updateCart({String id, bool isSelected, int qty}) async {
+    return await _getInt(() async {
+      return localDataSource.updateCart(
+        id: id,
+        isSelected: isSelected,
+        qty: qty
+      );
+    });
+  }
+
+  @override
+  Future<Either<Failure, int>> deleteCart({String id, String idBrand}) async {
+    return await _getInt(() async {
+      return localDataSource.deleteCart(
+        id: id,
+        idBrand: idBrand
+      );
     });
   }
 

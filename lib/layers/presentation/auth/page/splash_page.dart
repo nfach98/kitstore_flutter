@@ -54,9 +54,12 @@ class _SplashPageState extends State<SplashPage> {
                 right: 0,
                 bottom: 0,
                 child: Center(
-                  child: Image.asset(
-                    "assets/images/icon_black.png",
-                    height: 120,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Image.asset(
+                      "assets/images/logo_long_color.png",
+                      height: 120,
+                    ),
                   ),
                 )
               )

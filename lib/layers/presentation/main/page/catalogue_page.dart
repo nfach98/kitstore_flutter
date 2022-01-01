@@ -229,56 +229,56 @@ class _CataloguePageState extends State<CataloguePage> {
                   itemBuilder: (_, index) {
                     if (products[index] != null) {
                       return modeView == 0
-                          ? StoreAppItemGrid(
-                        product: products[index],
-                        onPressed: () {
-                          Navigator.push(
+                        ? StoreAppItemGrid(
+                          product: products[index],
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => DetailPage(
+                                  product: products[index],
+                                ))
+                            );
+                          },
+                          onFavoritePressed: (id, isFavorite) {
+                            if (isFavorite == 0) {
+                              return context.read<CatalogueNotifier>().addFavorite(id: id.toString());
+                            }
+                            else {
+                              return context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
+                            }
+                          },
+                        )
+                        : StoreAppItemList(
+                          product: products[index],
+                          onPressed: () {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => DetailPage(
                                 product: products[index],
                               ))
-                          );
-                        },
-                        onFavoritePressed: (id, isFavorite) {
-                          if (isFavorite == 0) {
-                            return context.read<CatalogueNotifier>().addFavorite(id: id.toString());
-                          }
-                          else {
-                            return context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
-                          }
-                        },
-                      )
-                          : StoreAppItemList(
-                        product: products[index],
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => DetailPage(
-                                product: products[index],
-                              ))
-                          );
-                        },
-                        onFavoritePressed: (id, isFavorite) {
-                          if (isFavorite == 0) {
-                            return context.read<CatalogueNotifier>().addFavorite(id: id.toString());
-                          }
-                          else {
-                            return context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
-                          }
-                        },
-                      );
+                            );
+                          },
+                          onFavoritePressed: (id, isFavorite) {
+                            if (isFavorite == 0) {
+                              return context.read<CatalogueNotifier>().addFavorite(id: id.toString());
+                            }
+                            else {
+                              return context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
+                            }
+                          },
+                        );
                     }
 
                     return Shimmer.fromColors(
                       baseColor: Colors.grey[400],
                       highlightColor: Colors.white,
                       child: modeView == 0
-                          ? StoreAppItemGrid(
-                        onPressed: () { },
-                      )
-                          : StoreAppItemList(
-                        onPressed: () { },
-                      ),
+                        ? StoreAppItemGrid(
+                          onPressed: () { },
+                        )
+                        : StoreAppItemList(
+                          onPressed: () { },
+                        ),
                     );
                   }
               ),
