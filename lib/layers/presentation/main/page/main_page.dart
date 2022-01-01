@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
+import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
@@ -29,6 +30,9 @@ class _MainPageState extends State<MainPage> {
 
       context.read<AccountNotifier>().reset();
       context.read<AccountNotifier>().getLoggedInUser();
+
+      context.read<CartNotifier>().reset();
+      context.read<CartNotifier>().getProducts();
     });
   }
 

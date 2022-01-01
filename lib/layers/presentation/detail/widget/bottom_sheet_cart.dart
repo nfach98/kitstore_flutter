@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
+import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
 import 'package:store_app/layers/presentation/store_app_button.dart';
 
@@ -72,7 +73,8 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
                     qty: qty
                   ).then((status) {
                     if (status != null) {
-                      // Navigator.pop(context);
+                      context.read<CartNotifier>().reset();
+                      context.read<CartNotifier>().getProducts();
                     }
                   });
                 },

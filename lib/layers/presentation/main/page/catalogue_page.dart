@@ -1,8 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/domain/entities/brand.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
+import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/cart/page/cart_page.dart';
 import 'package:store_app/layers/presentation/detail/page/detail_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
@@ -53,8 +55,12 @@ class _CataloguePageState extends State<CataloguePage> {
     final sorts = context.select((CatalogueNotifier n) => n.listSort);
     final selectedSort = context.select((CatalogueNotifier n) => n.sort);
 
+    final cartProducts = context.select((CartNotifier n) => n.listProduct);
+
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(
+        cartBadge: cartProducts == null ? 0 : cartProducts.length
+      ),
       body: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -88,7 +94,7 @@ class _CataloguePageState extends State<CataloguePage> {
     );
   }
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar({int cartBadge}) {
     return AppBar(
       title: StoreAppTextField(
         controller: _searchController,
@@ -127,9 +133,22 @@ class _CataloguePageState extends State<CataloguePage> {
       ),
       actions: [
         IconButton(
-          icon: Icon(
+          icon: cartBadge <= 0
+          ? Icon(
             Icons.shopping_cart,
             color: Colors.white,
+          )
+          : Badge(
+            badgeContent: Text(
+              cartBadge.toString(),
+              style: TextStyle(
+                color: Colors.white
+              ),
+            ),
+            child: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
           ),
           onPressed: () {
             Navigator.push(
