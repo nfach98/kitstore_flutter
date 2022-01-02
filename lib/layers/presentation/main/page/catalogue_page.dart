@@ -58,36 +58,36 @@ class _CataloguePageState extends State<CataloguePage> {
 
     final cartProducts = context.select((CartNotifier n) => n.listProduct);
 
-    return Scaffold(
-      appBar: _buildAppBar(
-        cartBadge: cartProducts == null ? 0 : cartProducts.length
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-        },
-        child: Column(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(
+          cartBadge: cartProducts == null ? 0 : cartProducts.length
+        ),
+        body: Column(
           children: [
             _buildFilterSort(
-              modeView: modeView,
-
-              brands: brands,
-              selectedBrands: selectedBrand,
-              
-              priceRange: priceRange,
-
-              sorts: sorts,
-              selectedSort: selectedSort
-            ),
-            Expanded(
-              child: _buildList(
                 modeView: modeView,
 
-                products: products,
-                isLoading: isLoadingProduct,
-                isKeepLoading: isKeepLoadingProduct
-              )
+                brands: brands,
+                selectedBrands: selectedBrand,
+
+                priceRange: priceRange,
+
+                sorts: sorts,
+                selectedSort: selectedSort
+            ),
+            Expanded(
+                child: _buildList(
+                    modeView: modeView,
+
+                    products: products,
+                    isLoading: isLoadingProduct,
+                    isKeepLoading: isKeepLoadingProduct
+                )
             )
           ],
         ),
@@ -97,40 +97,62 @@ class _CataloguePageState extends State<CataloguePage> {
 
   Widget _buildAppBar({int cartBadge}) {
     return AppBar(
-      title: StoreAppTextField(
-        controller: _searchController,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        hintText: "Search",
-        prefixIcon: Icon(
-          Icons.search,
-          color: Colors.white,
-        ),
-        suffixIcon: IconButton(
-          splashRadius: 16,
-          icon: Icon(
-            Icons.close,
-            size: 16,
-            color: Colors.grey,
+      title: Container(
+        height: 36,
+        child: StoreAppTextField(
+          controller: _searchController,
+          maxLines: 1,
+          keyboardType: TextInputType.text,
+          hintText: "Search product or brand",
+          style: TextStyle(
+            fontSize: 14
           ),
-          onPressed: () {
-            if (_searchController.text.isNotEmpty) {
-              _searchController.clear();
+          prefixIcon: Icon(
+            Icons.search,
+            color: colorPrimary,
+          ),
+          suffixIcon: IconButton(
+            splashRadius: 16,
+            icon: Icon(
+              Icons.close,
+              size: 16,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              if (_searchController.text.isNotEmpty) {
+                _searchController.clear();
 
-              context.read<CatalogueNotifier>().resetList();
-              context.read<CatalogueNotifier>().getProducts();
-            }
+                context.read<CatalogueNotifier>().resetList();
+                context.read<CatalogueNotifier>().getProducts();
+              }
 
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+            },
+          ),
+          contentPadding: EdgeInsets.all(4),
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32),
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0
+            )
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32),
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 0
+            )
+          ),
+          onChanged: (value) {
+            context.read<CatalogueNotifier>().resetList();
+            context.read<CatalogueNotifier>().getProducts(
+              search: value.isNotEmpty ? value : null
+            );
           },
         ),
-        onChanged: (value) {
-          context.read<CatalogueNotifier>().resetList();
-          context.read<CatalogueNotifier>().getProducts(
-            search: value.isNotEmpty ? value : null
-          );
-        },
       ),
       actions: [
         IconButton(

@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
@@ -82,6 +83,7 @@ class _SecurityPageState extends State<SecurityPage> {
                             obscureText: true,
                             keyboardType: TextInputType.text,
                             hintText: "New password",
+                            labelText: "New password",
                           ),
                         ),
                         SizedBox(height: 8),
@@ -103,6 +105,7 @@ class _SecurityPageState extends State<SecurityPage> {
                             obscureText: true,
                             keyboardType: TextInputType.text,
                             hintText: "Confirm new password",
+                            labelText: "Confirm new password",
                           ),
                         ),
                         SizedBox(height: 64),
@@ -137,6 +140,8 @@ class _SecurityPageState extends State<SecurityPage> {
       padding: EdgeInsets.all(12.0),
       child: StoreAppButton(
         text: "Save changes",
+        color: _passwordController.text.isEmpty && _confirmPasswordController.text.isEmpty
+          ? Colors.grey : colorPrimary,
         icon: Padding(
           padding: EdgeInsets.only(right: 8),
           child: Icon(

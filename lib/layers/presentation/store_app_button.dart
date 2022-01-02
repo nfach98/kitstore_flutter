@@ -19,7 +19,7 @@ class StoreAppButton extends StatelessWidget {
     this.icon,
     this.elevation,
     this.radius = 32,
-    this.fontSize = 14,
+    this.fontSize = 16,
     this.padding = const EdgeInsets.symmetric(vertical: 12, horizontal: 20)})
       : super(key: key);
 

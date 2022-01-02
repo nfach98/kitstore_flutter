@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -60,7 +62,7 @@ class _EditPageState extends State<EditPage> {
           _showDialogUnsaved();
         }
 
-        return _nameController.text == user.name && _emailController.text == user.email && image == null;
+        return user == null || (user != null && _nameController.text == user.name && _emailController.text == user.email && image == null);
       },
       child: Scaffold(
         appBar: _buildAppBar(),
@@ -140,6 +142,7 @@ class _EditPageState extends State<EditPage> {
                             },
                             keyboardType: TextInputType.text,
                             hintText: "Name",
+                            labelText: "Name",
                           ),
                         ),
                         SizedBox(height: 8),
@@ -160,6 +163,7 @@ class _EditPageState extends State<EditPage> {
                             },
                             keyboardType: TextInputType.emailAddress,
                             hintText: "Email",
+                            labelText: "Email",
                           ),
                         ),
                         SizedBox(height: 64),
@@ -171,7 +175,10 @@ class _EditPageState extends State<EditPage> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: _buildButtonSave(user: user),
+                  child: _buildButtonSave(
+                    user: user,
+                    image: image
+                  ),
                 )
               ],
             ),
@@ -189,11 +196,13 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  Widget _buildButtonSave({User user}) {
+  Widget _buildButtonSave({User user, File image}) {
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: StoreAppButton(
         text: "Save changes",
+        color: user == null || (user != null && _nameController.text == user.name && _emailController.text == user.email && image == null)
+         ? Colors.grey : colorPrimary,
         icon: Padding(
           padding: EdgeInsets.only(right: 8),
           child: Icon(

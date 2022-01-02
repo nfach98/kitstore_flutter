@@ -25,7 +25,8 @@ import 'package:store_app/layers/domain/usecases/user/update_user_usecase.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
-import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
+import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
+import 'package:store_app/layers/presentation/auth/notifier/register_notifier.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
@@ -38,10 +39,11 @@ final sl = GetIt.instance;
 Future<void> init() async {
   // ===================== NOTIFIER ========================
   // Auth
-  sl.registerFactory(() => AuthNotifier(
+  sl.registerFactory(() => LoginNotifier(
     loggedInUserUsecase: sl(),
     loginUsecase: sl(),
-    logoutUsecase: sl(),
+  ));
+  sl.registerFactory(() => RegisterNotifier(
     registerUsecase: sl()
   ));
 

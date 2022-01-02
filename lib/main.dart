@@ -4,8 +4,9 @@ import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
-import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
+import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/core/di/injection_container.dart' as di;
+import 'package:store_app/layers/presentation/auth/notifier/register_notifier.dart';
 import 'package:store_app/layers/presentation/auth/page/splash_page.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
@@ -24,8 +25,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthNotifier>(
-          create: (_) => di.sl<AuthNotifier>(),
+        ChangeNotifierProvider<LoginNotifier>(
+          create: (_) => di.sl<LoginNotifier>(),
+        ),
+        ChangeNotifierProvider<RegisterNotifier>(
+          create: (_) => di.sl<RegisterNotifier>(),
         ),
 
         ChangeNotifierProvider<MainNotifier>(

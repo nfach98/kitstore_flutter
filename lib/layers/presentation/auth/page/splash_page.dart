@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
+import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/layers/presentation/auth/page/login_page.dart';
 import 'package:store_app/layers/presentation/main/page/main_page.dart';
 
@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Timer(duration, () {
-        context.read<AuthNotifier>().getLoggedInUser().then((user) {
+        context.read<LoginNotifier>().getLoggedInUser().then((user) {
           if (user != null) {
             Navigator.pushReplacement(
               context,

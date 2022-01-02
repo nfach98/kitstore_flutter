@@ -8,7 +8,7 @@ import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/page/about_page.dart';
 import 'package:store_app/layers/presentation/account/page/edit_page.dart';
 import 'package:store_app/layers/presentation/account/page/security_page.dart';
-import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
+import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/layers/presentation/auth/page/login_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 import 'package:store_app/layers/presentation/main/widget/item_account_setting.dart';
@@ -197,7 +197,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                     onPressed: () {
-                      context.read<AuthNotifier>().logout().then((status) {
+                      context.read<AccountNotifier>().logout().then((status) {
                         if (status) {
                           Navigator.pop(context);
                           Navigator.pushReplacement(
