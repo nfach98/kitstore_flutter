@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
 import 'package:store_app/core/di/injection_container.dart' as di;
 import 'package:store_app/layers/presentation/auth/page/splash_page.dart';
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<EditNotifier>(
           create: (_) => di.sl<EditNotifier>(),
+        ),
+        ChangeNotifierProvider<SecurityNotifier>(
+          create: (_) => di.sl<SecurityNotifier>(),
         ),
 
         ChangeNotifierProvider<DetailNotifier>(

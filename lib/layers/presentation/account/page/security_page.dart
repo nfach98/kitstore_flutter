@@ -1,67 +1,57 @@
-import 'dart:io';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 
 import '../../store_app_button.dart';
 import '../../store_app_text_field.dart';
 
-class EditPage extends StatefulWidget {
-  const EditPage({Key key}) : super(key: key);
+class SecurityPage extends StatefulWidget {
+  const SecurityPage({Key key}) : super(key: key);
 
   @override
-  _EditPageState createState() => _EditPageState();
+  _SecurityPageState createState() => _SecurityPageState();
 }
 
-class _EditPageState extends State<EditPage> {
-  TextEditingController _nameController;
-  TextEditingController _emailController;
-  final ImagePicker _picker = ImagePicker();
+class _SecurityPageState extends State<SecurityPage> {
+  TextEditingController _passwordController;
+  TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      context.read<EditNotifier>().reset();
-      context.read<EditNotifier>().getLoggedInUser().then((user) {
-        if (user != null) {
-          _nameController.text = user.name;
-          _emailController.text = user.email;
-        }
-      });
+      context.read<SecurityNotifier>().reset();
+      context.read<SecurityNotifier>().getLoggedInUser();
     });
   }
 
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((EditNotifier n) => n.user);
-    final image = context.select((EditNotifier n) => n.image);
+    final user = context.select((SecurityNotifier n) => n.user);
 
     return WillPopScope(
       onWillPop: () async {
-        if (_nameController.text != user.name || _emailController.text != user.email || image != null) {
+        if (_passwordController.text.isNotEmpty) {
           _showDialogUnsaved();
         }
 
-        return _nameController.text == user.name && _emailController.text == user.email && image == null;
+        return _passwordController.text.isNotEmpty;
       },
       child: Scaffold(
         appBar: _buildAppBar(),
@@ -80,67 +70,20 @@ class _EditPageState extends State<EditPage> {
                     padding: EdgeInsets.all(12),
                     child: Column(
                       children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: App.getWidth(context) * .5,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(500)),
-                                  child: image == null
-                                  ? Image.asset(
-                                    user == null || user.avatar == null
-                                      ? "assets/images/no_image.png"
-                                      : user.avatar,
-                                    fit: BoxFit.cover,
-                                  )
-                                  : Image.file(
-                                    image,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              ),
-                            ),
-                            Positioned(
-                              right: 8,
-                              bottom: 8,
-                              child: InkWell(
-                                onTap: () {
-                                  _showPicker();
-                                },
-                                borderRadius: BorderRadius.circular(100),
-                                child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: colorPrimary
-                                  ),
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            )
-                          ],
-                        ),
-
-                        SizedBox(height: 20),
-
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 12),
                           child: StoreAppTextField(
-                            controller: _nameController,
+                            controller: _passwordController,
                             maxLines: 1,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Name could not be empty";
+                                return "Password could not be empty";
                               }
                               return null;
                             },
+                            obscureText: true,
                             keyboardType: TextInputType.text,
-                            hintText: "Name",
+                            hintText: "New password",
                           ),
                         ),
                         SizedBox(height: 8),
@@ -148,19 +91,20 @@ class _EditPageState extends State<EditPage> {
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 12),
                           child: StoreAppTextField(
-                            controller: _emailController,
+                            controller: _confirmPasswordController,
                             maxLines: 1,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return "Email could not be empty";
+                                return "Password confirmation could not be empty";
                               }
                               if (!EmailValidator.validate(value)) {
-                                return "Wrong email format";
+                                return "Confirm password email format";
                               }
                               return null;
                             },
-                            keyboardType: TextInputType.emailAddress,
-                            hintText: "Email",
+                            obscureText: true,
+                            keyboardType: TextInputType.text,
+                            hintText: "Confirm new password",
                           ),
                         ),
                         SizedBox(height: 64),
@@ -185,7 +129,7 @@ class _EditPageState extends State<EditPage> {
   Widget _buildAppBar() {
     return AppBar(
       title: Text(
-        "About"
+        "Security"
       ),
     );
   }
@@ -203,10 +147,8 @@ class _EditPageState extends State<EditPage> {
           ),
         ),
         onPressed: () {
-          context.read<EditNotifier>().updateUser(
-            id: user.id.toString(),
-            name: _nameController.text,
-            email: _emailController.text,
+          context.read<SecurityNotifier>().updateUser(
+            password: _passwordController.text
           ).then((status) {
             if (status != null) {
               context.read<AccountNotifier>().reset();
@@ -219,42 +161,10 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  _showPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return SafeArea(
-          child: Container(
-            child: Wrap(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.photo_library),
-                  title: Text('Gallery'),
-                  onTap: () {
-                    _getImage(source: ImageSource.gallery);
-                    Navigator.pop(context);
-                  }
-                ),
-                ListTile(
-                  leading: Icon(Icons.photo_camera),
-                  title: Text('Camera'),
-                  onTap: () {
-                    _getImage(source: ImageSource.camera);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    );
-  }
-
   _showDialogUnsaved() {
     showDialog(
-      context: context,
-      builder: (_) => Dialog(
+        context: context,
+        builder: (_) => Dialog(
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
@@ -287,7 +197,7 @@ class _EditPageState extends State<EditPage> {
                       child: Text(
                         "Cancel",
                         style: TextStyle(
-                          color: Colors.grey
+                            color: Colors.grey
                         ),
                       ),
                       onPressed: () {
@@ -300,7 +210,7 @@ class _EditPageState extends State<EditPage> {
                       child: Text(
                         "Leave",
                         style: TextStyle(
-                          color: Colors.red
+                            color: Colors.red
                         ),
                       ),
                       onPressed: () {
@@ -317,15 +227,5 @@ class _EditPageState extends State<EditPage> {
           ),
         )
     );
-  }
-
-  Future _getImage({ImageSource source}) async {
-    final pickedFile = await _picker.getImage(source: source);
-    if (pickedFile != null) {
-      File picked = File(pickedFile.path);
-      setState(() {
-        context.read<EditNotifier>().setImage(picked);
-      });
-    }
   }
 }

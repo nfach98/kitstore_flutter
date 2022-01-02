@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
   #core
+  crypt: ^3.0.1
   darq: 0.5.1
   dartz: ^0.8.9
   data_connection_checker: ^0.3.4

@@ -185,7 +185,7 @@ class _EditPageState extends State<EditPage> {
   Widget _buildAppBar() {
     return AppBar(
       title: Text(
-        "About"
+        "Edit"
       ),
     );
   }
@@ -207,6 +207,7 @@ class _EditPageState extends State<EditPage> {
             id: user.id.toString(),
             name: _nameController.text,
             email: _emailController.text,
+            oldAvatar: user.avatar
           ).then((status) {
             if (status != null) {
               context.read<AccountNotifier>().reset();

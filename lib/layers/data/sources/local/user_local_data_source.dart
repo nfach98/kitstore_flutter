@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
-
+import 'package:crypt/crypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_app/core/sqlite/sqlite_helper.dart';
 import 'package:store_app/layers/data/models/user_model.dart';
@@ -22,10 +21,11 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<UserModel> login({String email, String password}) async {
+    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     List<Map<String, dynamic>> maps = await dbClient.query('users',
       where: "email = ? AND password = ?",
-      whereArgs: [email, password]
+      whereArgs: [email, Crypt.sha256(password).toString()]
     );
 
     if (maps.isNotEmpty) {
@@ -39,11 +39,12 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<int> register({String name, String email, String password}) async {
+    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     Map<String, dynamic> map = {
       'name' : name,
       'email' : email,
-      'password' : password
+      'password' : Crypt.sha256(password).toString()
     };
 
     var prefs = await SharedPreferences.getInstance();
@@ -74,6 +75,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<int> updateUser({String name, String email, String password, String avatar}) async {
+    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     var prefs = await SharedPreferences.getInstance();
     String stringValue = prefs.getString('user');
@@ -92,7 +94,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       map["email"] = email;
     }
     if (password != null) {
-      map["password"] = password;
+      map["password"] = Crypt.sha256(password).toString();
     }
     if (avatar != null) {
       map["avatar"] = avatar;
