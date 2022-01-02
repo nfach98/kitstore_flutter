@@ -36,6 +36,10 @@ class _ItemCartProductState extends State<ItemCartProduct> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isSelected != null) {
+      isSelected = widget.isSelected;
+    }
+
     return GestureDetector(
       onTap: widget.onPressed ?? () { },
       child: Container(
@@ -150,7 +154,8 @@ class _ItemCartProductState extends State<ItemCartProduct> {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
+              color: colorPrimary
             ),
           ),
         ],

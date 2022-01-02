@@ -207,55 +207,67 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildTotal({List<Product> products, List<int> selected, int total}) {
-    return Container(
-      padding: EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Checkbox(
-            activeColor: colorPrimary,
-            value: selected.isNotEmpty && products.isNotEmpty && selected.length == products.length,
-            onChanged: (value) {
-
-            }
-          ),
-          Text(
-            "Select all",
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 14,
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0)
+      ),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Checkbox(
+              activeColor: colorPrimary,
+              value: selected.isNotEmpty && products.isNotEmpty && selected.length == products.length,
+              onChanged: (value) {
+                if (value) {
+                  context.read<CartNotifier>().addAll();
+                }
+                else {
+                  context.read<CartNotifier>().removeAll();
+                }
+              }
             ),
-          ),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  "Grand Total",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-                Text(
-                  App.currency(context, total),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: colorPrimary
-                  ),
-                )
-              ],
+            Text(
+              "Select all",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+              ),
             ),
-          ),
-        ],
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Grand Total",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(
+                    App.currency(context, total),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: colorPrimary
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

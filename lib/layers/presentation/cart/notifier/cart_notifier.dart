@@ -160,6 +160,24 @@ class CartNotifier with ChangeNotifier {
     notifyListeners();
   }
 
+  addAll() {
+    List<int> list = List.from(listSelected);
+    list.addAll(listProduct.map((e) => e.id).toList());
+    listSelected = list;
+    setGrandTotal();
+
+    notifyListeners();
+  }
+
+  removeAll() {
+    List<int> list = List.from(listSelected);
+    list.clear();
+    listSelected = list;
+    setGrandTotal();
+
+    notifyListeners();
+  }
+
   setGrandTotal() {
     List<Product> products = listProduct.where((element) => listSelected.contains(element.id)).toList();
     if (products.isNotEmpty) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
 import 'package:store_app/core/di/injection_container.dart' as di;
 import 'package:store_app/layers/presentation/auth/page/splash_page.dart';
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AboutNotifier>(
           create: (_) => di.sl<AboutNotifier>(),
         ),
+        ChangeNotifierProvider<EditNotifier>(
+          create: (_) => di.sl<EditNotifier>(),
+        ),
 
         ChangeNotifierProvider<DetailNotifier>(
           create: (_) => di.sl<DetailNotifier>(),
@@ -57,6 +61,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: colorPrimary,
           accentColor: colorAccent,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Poppins'
         ),
         home: SplashPage(),
         debugShowCheckedModeBanner: false,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
@@ -21,16 +23,13 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AccountNotifier n) => n.user);
-    final isLoadingUser = context.select((AccountNotifier n) => n.isLoadingUser);
 
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildProfile(
-                user: user
-              ),
+              _buildProfile(user: user),
 
               ItemAccountSetting(
                 text: "Edit",
@@ -76,16 +75,7 @@ class _AccountPageState extends State<AccountPage> {
                   size: 24,
                   color: Colors.red,
                 ),
-                onPressed: () {
-                  context.read<AuthNotifier>().logout().then((status) {
-                    if (status) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => LoginPage())
-                      );
-                    }
-                  });
-                },
+                onPressed: _showDialogLogout,
               ),
             ],
           ),
@@ -148,6 +138,75 @@ class _AccountPageState extends State<AccountPage> {
           )
         ],
       ),
+    );
+  }
+
+  _showDialogLogout() {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: EdgeInsets.only(left: 20, top: 32, right: 20), // spacing inside the box
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Logout",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Do you want to logout your account from KitStore?",
+                style: Theme.of(context).textTheme.bodyText2,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 24),
+
+              ButtonBar(
+                buttonMinWidth: 100,
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FlatButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: Colors.grey
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  FlatButton(
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: Colors.red
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<AuthNotifier>().logout().then((status) {
+                        if (status) {
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginPage())
+                          );
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }

@@ -94,12 +94,6 @@ class _DetailPageState extends State<DetailPage> {
       iconTheme: IconThemeData(
         color: colorPrimary
       ),
-      // title: Text(
-      //   widget.product == null ? "" : widget.product.name,
-      //   style: TextStyle(
-      //     color: colorPrimary
-      //   ),
-      // ),
       actions: [
         IconButton(
           icon: Icon(
@@ -215,12 +209,12 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
       onPressed: () {
-        showBottomSheetCart();
+        _showBottomSheetCart();
       },
     );
   }
 
-  showBottomSheetCart() {
+  _showBottomSheetCart() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

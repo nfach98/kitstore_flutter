@@ -10,4 +10,6 @@ abstract class UserRepository {
   Future<Either<Failure, bool>> logout();
 
   Future<Either<Failure, User>> getLoggedInUser();
+
+  Future<Either<Failure, int>> updateUser({String name, String email, String password, String avatar});
 }

@@ -34,7 +34,7 @@ class _StoreAppItemGridState extends State<StoreAppItemGrid> {
       onTap: widget.onPressed ?? () { },
       child: Container(
         color: Colors.transparent,
-        height: 320,
+        height: 332,
         child: Stack(
           children: [
             Column(

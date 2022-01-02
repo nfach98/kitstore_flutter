@@ -30,6 +30,7 @@ dependencies:
   badges: ^1.2.0
   chips_choice: ^2.0.1
   email_validator: ^1.0.6
+  image_picker: ^0.6.7+14
   shimmer: ^1.1.2
   toast: ^0.1.5
   waterfall_flow: ^2.0.5
@@ -47,5 +48,13 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/avatars/
     - assets/images/brands/
     - assets/images/products/
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Bold.ttf
+        - asset: assets/fonts/Poppins-Light.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf

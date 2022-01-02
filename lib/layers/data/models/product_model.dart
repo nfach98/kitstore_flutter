@@ -51,16 +51,31 @@ class ProductModel extends Product {
       brand = this.brand.toJson();
     }
 
-    return {
+    var map = {
       'id' : id,
       'id_brand' : idBrand,
       'name' : name,
       'image' : image,
       'price' : price,
-      'qty' : qty,
-      'is_favorite' : isFavorite,
-      'is_selected' : isSelected,
-      'brand' : brand,
+      // 'qty' : qty,
+      // 'is_favorite' : isFavorite,
+      // 'is_selected' : isSelected,
+      // 'brand' : brand,
     };
+
+    if (this.qty != null) {
+      map['qty'] = qty;
+    }
+    if (this.isFavorite != null) {
+      map['is_favorite'] = isFavorite;
+    }
+    if (this.isSelected != null) {
+      map['is_selected'] = isSelected;
+    }
+    if (brand != null) {
+      map['brand'] = brand;
+    }
+
+    return map;
   }
 }

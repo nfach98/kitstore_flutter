@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_app/core/sqlite/sqlite_helper.dart';
@@ -12,6 +13,8 @@ abstract class UserLocalDataSource {
   Future<bool> logout();
 
   Future<UserModel> getLoggedInUser();
+
+  Future<int> updateUser({String name, String email, String password, String avatar});
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -67,5 +70,53 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     if (stringValue != null) map = json.decode(stringValue);
 
     return map.isNotEmpty ? UserModel.fromJson(map) : null;
+  }
+
+  @override
+  Future<int> updateUser({String name, String email, String password, String avatar}) async {
+    var dbClient = await helper.db;
+    var prefs = await SharedPreferences.getInstance();
+    String stringValue = prefs.getString('user');
+
+    Map<String, dynamic> user = {};
+    if (stringValue != null) {
+      user = json.decode(stringValue) as Map<String, dynamic>;
+    }
+
+    Map<String, dynamic> map = {};
+
+    if (name != null) {
+      map["name"] = name;
+    }
+    if (email != null) {
+      map["email"] = email;
+    }
+    if (password != null) {
+      map["password"] = password;
+    }
+    if (avatar != null) {
+      map["avatar"] = avatar;
+    }
+
+    int status = await dbClient.update(
+      'users',
+      map,
+      where: "id = ?",
+      whereArgs: [user["id"]]
+    );
+
+    if (status == user["id"]) {
+      List<Map<String, dynamic>> maps = await dbClient.query('users',
+        where: "id = ?",
+        whereArgs: [user["id"]]
+      );
+
+      if (maps.isNotEmpty) {
+        var prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', json.encode(maps.first));
+      }
+    }
+
+    return status;
   }
 }

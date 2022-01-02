@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
@@ -75,5 +78,11 @@ class _MainPageState extends State<MainPage> {
         ),
       ]
     );
+  }
+
+  findRoot(FileSystemEntity entity) {
+    final Directory parent = entity.parent;
+    if (parent.path == entity.path) return parent;
+    return findRoot(parent);
   }
 }

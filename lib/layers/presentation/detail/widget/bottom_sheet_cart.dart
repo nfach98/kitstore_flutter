@@ -67,12 +67,12 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
                   context.read<DetailNotifier>().addCart(
                     id: widget.product.id.toString(),
                     qty: qty
                   ).then((status) {
                     if (status != null) {
+                      Navigator.pop(context);
                       context.read<CartNotifier>().reset();
                       context.read<CartNotifier>().getProducts();
                     }

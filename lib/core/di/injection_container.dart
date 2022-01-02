@@ -21,7 +21,9 @@ import 'package:store_app/layers/domain/usecases/user/get_logged_in_user_usecase
 import 'package:store_app/layers/domain/usecases/user/login_usecase.dart';
 import 'package:store_app/layers/domain/usecases/user/logout_usecase.dart';
 import 'package:store_app/layers/domain/usecases/user/register_usecase.dart';
+import 'package:store_app/layers/domain/usecases/user/update_user_usecase.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/auth_notifier.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
@@ -62,6 +64,10 @@ Future<void> init() async {
 
   // Account
   sl.registerFactory(() => AboutNotifier());
+  sl.registerFactory(() => EditNotifier(
+    loggedInUserUsecase: sl(),
+    updateUserUsecase: sl()
+  ));
 
   // Detail
   sl.registerFactory(() => DetailNotifier(
@@ -97,6 +103,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUsecase(sl()));
   sl.registerLazySingleton(() => LogoutUsecase(sl()));
   sl.registerLazySingleton(() => RegisterUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateUserUsecase(sl()));
 
   // ===================== REPOSITORIES ========================
   // Brands

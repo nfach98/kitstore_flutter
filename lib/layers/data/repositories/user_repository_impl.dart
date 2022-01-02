@@ -1,11 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:store_app/core/error/exceptions.dart';
 import 'package:store_app/core/error/failures.dart';
-import 'package:store_app/layers/data/sources/local/product_local_data_source.dart';
 import 'package:store_app/layers/data/sources/local/user_local_data_source.dart';
-import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
-import 'package:store_app/layers/domain/repositories/product_repository.dart';
 import 'package:store_app/layers/domain/repositories/user_repository.dart';
 
 typedef _IntLoader = Future<int> Function();
@@ -51,6 +48,18 @@ class UserRepositoryImpl extends UserRepository {
   Future<Either<Failure, User>> getLoggedInUser() async {
     return await _getUser(() {
       return localDataSource.getLoggedInUser();
+    });
+  }
+
+  @override
+  Future<Either<Failure, int>> updateUser({String name, String email, String password, String avatar}) async {
+    return await _getInt(() {
+      return localDataSource.updateUser(
+        name: name,
+        email: email,
+        password: password,
+        avatar: avatar
+      );
     });
   }
 
