@@ -21,25 +21,23 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<UserModel> login({String email, String password}) async {
-    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     List<Map<String, dynamic>> maps = await dbClient.query('users',
-      where: "email = ? AND password = ?",
-      whereArgs: [email, Crypt.sha256(password).toString()]
+      where: "email = ?",
+      whereArgs: [email]
     );
+    bool login = maps.isNotEmpty && Crypt(maps.first["password"]).match(password);
 
-    if (maps.isNotEmpty) {
+    if (login) {
       var prefs = await SharedPreferences.getInstance();
       prefs.setString('user', json.encode(maps.first));
-      print(maps.first);
     }
 
-    return maps.isNotEmpty ? UserModel.fromJson(maps.first) : null;
+    return login ? UserModel.fromJson(maps.first) : null;
   }
 
   @override
   Future<int> register({String name, String email, String password}) async {
-    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     Map<String, dynamic> map = {
       'name' : name,
@@ -75,7 +73,6 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<int> updateUser({String name, String email, String password, String avatar}) async {
-    print(Crypt.sha256(password).toString());
     var dbClient = await helper.db;
     var prefs = await SharedPreferences.getInstance();
     String stringValue = prefs.getString('user');
