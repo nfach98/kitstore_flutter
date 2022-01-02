@@ -13,11 +13,11 @@ class KitStoreLoadingDialog {
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
+          padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: EdgeInsets.only(left: 20, top: 32, right: 20), // spacing inside the box
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
