@@ -72,10 +72,11 @@ class ProductRepositoryImpl extends ProductRepository {
   }
 
   @override
-  Future<Either<Failure, int>> updateCart({String id, bool isSelected, int qty}) async {
+  Future<Either<Failure, int>> updateCart({String id, String idBrand, bool isSelected, int qty}) async {
     return await _getInt(() async {
       return localDataSource.updateCart(
         id: id,
+        idBrand: idBrand,
         isSelected: isSelected,
         qty: qty
       );

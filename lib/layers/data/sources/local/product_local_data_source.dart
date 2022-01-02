@@ -20,7 +20,7 @@ abstract class ProductLocalDataSource {
 
   Future<int> addCart({String id, int qty});
 
-  Future<int> updateCart({String id, bool isSelected, int qty});
+  Future<int> updateCart({String id, String idBrand, bool isSelected, int qty});
 
   Future<int> deleteCart({String id, String idBrand});
 }
@@ -252,16 +252,40 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     }
 
     var map = {
-      'is_selected' : isSelected ? 1 : 0,
-      'qty': qty
+      'is_selected' : isSelected ? 1 : 0
     };
 
-    return await dbClient.update(
-      'cart_products',
-      map,
-      where: "id_product = ? AND id_user = ?",
-      whereArgs: [id, user["id"]]
-    );
+    if (id != null) {
+      map['qty'] = qty;
+      return await dbClient.update(
+        'cart_products',
+        map,
+        where: "id_product = ? AND id_user = ?",
+        whereArgs: [id, user["id"]]
+      );
+    }
+    else if (idBrand != null) {
+      List<Map<String, dynamic>> maps = await dbClient.rawQuery("""
+      UPDATE cart_products
+      SET is_selected = ${isSelected ? 1 : 0}
+      WHERE id_product IN (
+        SELECT p.id FROM cart_products cp
+        INNER JOIN products p ON p.id = cp.id_product
+        WHERE cp.id_user = ${user["id"]} AND p.id_brand = $idBrand
+      )
+    """);
+
+      return maps.length;
+    }
+
+    else {
+      return await dbClient.update(
+        'cart_products',
+        map,
+        where: "id_user = ?",
+        whereArgs: [user["id"]]
+      );
+    }
   }
 
   @override
@@ -275,7 +299,14 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
       user = json.decode(stringValue) as Map<String, dynamic>;
     }
 
-    if (idBrand != null) {
+    if (idBrand == null) {
+      return await dbClient.delete(
+        'cart_products',
+        where: 'id_product = ? AND id_user = ?',
+        whereArgs: [id, user["id"]],
+      );
+    }
+    else {
       List<Map<String, dynamic>> maps = await dbClient.rawQuery("""
       DELETE FROM cart_products
       WHERE id_product IN (
@@ -286,13 +317,6 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     """);
 
       return maps.length;
-    }
-    else {
-      return await dbClient.delete(
-        'cart_products',
-        where: 'id_product = ? AND id_user = ?',
-        whereArgs: [id, user["id"]],
-      );
     }
   }
 }

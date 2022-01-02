@@ -16,7 +16,7 @@ abstract class ProductRepository {
 
   Future<Either<Failure, int>> addCart({String id, int qty});
 
-  Future<Either<Failure, int>> updateCart({String id, bool isSelected, int qty});
+  Future<Either<Failure, int>> updateCart({String id, String idBrand, bool isSelected, int qty});
 
   Future<Either<Failure, int>> deleteCart({String id, String idBrand});
 }

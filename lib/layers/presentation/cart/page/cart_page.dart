@@ -104,14 +104,18 @@ class _CartPageState extends State<CartPage> {
                         ItemCartBrand(
                           brand: brands[index],
                           isSelected: brandSelected.length == prod.length,
-                          onChanged: (value) {
-                            if (value) {
-                              context.read<CartNotifier>().addSelectedBrand(brands[index].id);
-                            }
-                            else {
-                              context.read<CartNotifier>().removeSelectedBrand(brands[index].id);
-                            }
-                          },
+                          // onChanged: (value) {
+                          //   context.read<CartNotifier>().updateCart(
+                          //     idBrand: brands[index].id.toString(),
+                          //     isSelected: value,
+                          //   );
+                          //   if (value) {
+                          //     context.read<CartNotifier>().addSelectedBrand(brands[index].id);
+                          //   }
+                          //   else {
+                          //     context.read<CartNotifier>().removeSelectedBrand(brands[index].id);
+                          //   }
+                          // },
                         ),
                         ListView.separated(
                           shrinkWrap: true,
@@ -136,7 +140,7 @@ class _CartPageState extends State<CartPage> {
 
                         SizedBox(height: 8),
                         Text(
-                          "Subtotal: ${App.currency(context, prod.map((e) => e.price * e.qty).sum())}",
+                          "Subtotal: ${App.currency(context, prod.map((e) => e.price * e.qty).toList().sum())}",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -231,6 +235,9 @@ class _CartPageState extends State<CartPage> {
               activeColor: colorPrimary,
               value: selected.isNotEmpty && products.isNotEmpty && selected.length == products.length,
               onChanged: (value) {
+                context.read<CartNotifier>().updateCart(
+                  isSelected: value,
+                );
                 if (value) {
                   context.read<CartNotifier>().addAll();
                 }

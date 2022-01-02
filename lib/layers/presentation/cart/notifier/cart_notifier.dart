@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:darq/darq.dart';
 import 'package:store_app/core/usecase/usecase.dart';
@@ -54,11 +51,12 @@ class CartNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<int> updateCart({String id, bool isSelected, int qty}) async {
+  Future<int> updateCart({String id, String idBrand, bool isSelected, int qty}) async {
     int status;
 
     final result = await _updateCartUsecase(UpdateCartParams(
       id: id,
+      idBrand: idBrand,
       isSelected: isSelected,
       qty: qty
     ));
@@ -67,14 +65,32 @@ class CartNotifier with ChangeNotifier {
       (error) { },
       (success) {
         status = success;
-        List<Product> list = List.from(listProduct);
-        list.forEach((element) {
-          if (element.id == int.parse(id)) {
+        if (id != null) {
+          List<Product> list = List.from(listProduct);
+          list.forEach((element) {
+            if (element.id == int.parse(id)) {
+              element.isSelected = isSelected ? 1 : 0;
+              element.qty = qty;
+            }
+          });
+          listProduct = list;
+        }
+        else if (idBrand != null){
+          List<Product> list = List.from(listProduct);
+          list.forEach((element) {
+            if (element.idBrand == int.parse(idBrand)) {
+              element.isSelected = isSelected ? 1 : 0;
+            }
+          });
+          listProduct = list;
+        }
+        else {
+          List<Product> list = List.from(listProduct);
+          list.forEach((element) {
             element.isSelected = isSelected ? 1 : 0;
-            element.qty = qty;
-          }
-        });
-        listProduct = list;
+          });
+          listProduct = list;
+        }
         setGrandTotal();
       }
     );
@@ -136,7 +152,7 @@ class CartNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  addSelectedBrand(int value) {
+  addSelectedBrand(int value) async {
     List<Product> products = List.from(listProduct);
     products = products.where((element) => element.idBrand == value).toList();
 
@@ -148,7 +164,7 @@ class CartNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  removeSelectedBrand(int value) {
+  removeSelectedBrand(int value) async {
     List<Product> products = List.from(listProduct);
     products = products.where((element) => element.idBrand == value).toList();
 

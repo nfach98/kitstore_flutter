@@ -13,6 +13,7 @@ class UpdateCartUsecase extends UseCase<int, UpdateCartParams> {
   Future<Either<Failure, int>> call(UpdateCartParams params) async {
     return await repository.updateCart(
       id: params.id,
+      idBrand: params.idBrand,
       isSelected: params.isSelected,
       qty: params.qty
     );
@@ -21,11 +22,13 @@ class UpdateCartUsecase extends UseCase<int, UpdateCartParams> {
 
 class UpdateCartParams extends Equatable {
   final String id;
+  final String idBrand;
   final bool isSelected;
   final int qty;
 
   const UpdateCartParams({
     this.id,
+    this.idBrand,
     this.isSelected,
     this.qty,
   });
@@ -33,6 +36,7 @@ class UpdateCartParams extends Equatable {
   @override
   List<Object> get props => [
     id,
+    idBrand,
     isSelected,
     qty,
   ];
