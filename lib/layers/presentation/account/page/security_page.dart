@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
-import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 
@@ -33,7 +32,6 @@ class _SecurityPageState extends State<SecurityPage> {
     });
   }
 
-
   @override
   void dispose() {
     _passwordController.dispose();
@@ -51,7 +49,7 @@ class _SecurityPageState extends State<SecurityPage> {
           _showDialogUnsaved();
         }
 
-        return _passwordController.text.isNotEmpty;
+        return _passwordController.text.isEmpty;
       },
       child: Scaffold(
         appBar: _buildAppBar(),

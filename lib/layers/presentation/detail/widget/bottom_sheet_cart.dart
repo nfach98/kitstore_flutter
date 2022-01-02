@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
+import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
@@ -34,26 +35,41 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Quantity",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
+            Container(
+              height: 8,
+              alignment: Alignment.center,
+              width: App.getWidth(context) * .5,
+              decoration: BoxDecoration(
+                color: colorPrimary,
+                borderRadius: BorderRadius.circular(32)
               ),
             ),
             SizedBox(height: 20),
 
-            FractionallySizedBox(
-              widthFactor: 1,
-              child: _buildQuantity()
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Quantity",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                FractionallySizedBox(
+                    widthFactor: 1,
+                    child: _buildQuantity()
+                ),
+                SizedBox(height: 32),
+              ],
             ),
-            SizedBox(height: 32),
 
             FractionallySizedBox(
               widthFactor: 1,

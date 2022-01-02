@@ -33,9 +33,9 @@ class _AccountPageState extends State<AccountPage> {
               _buildProfile(user: user),
 
               ItemAccountSetting(
-                text: "Edit",
+                text: "Profile",
                 icon: Icon(
-                  Icons.edit,
+                  Icons.person,
                   size: 24,
                   color: colorPrimary,
                 ),

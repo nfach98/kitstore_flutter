@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:store_app/core/config/constants.dart';
+import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/brand.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +6,7 @@ import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/widget/bottom_sheet_image_picker.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 
 import '../../store_app_button.dart';
@@ -185,7 +184,7 @@ class _EditPageState extends State<EditPage> {
   Widget _buildAppBar() {
     return AppBar(
       title: Text(
-        "Edit"
+        "Profile"
       ),
     );
   }
@@ -223,32 +222,27 @@ class _EditPageState extends State<EditPage> {
   _showPicker() {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (_) {
-        return SafeArea(
-          child: Container(
-            child: Wrap(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.photo_library),
-                  title: Text('Gallery'),
-                  onTap: () {
-                    _getImage(source: ImageSource.gallery);
-                    Navigator.pop(context);
-                  }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20)
                 ),
-                ListTile(
-                  leading: Icon(Icons.photo_camera),
-                  title: Text('Camera'),
-                  onTap: () {
-                    _getImage(source: ImageSource.camera);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
+              ),
+              child: BottomSheetImagePicker(
+                picker: _picker,
+              )
+            )
+          ],
         );
-      }
+      },
     );
   }
 
@@ -318,15 +312,5 @@ class _EditPageState extends State<EditPage> {
           ),
         )
     );
-  }
-
-  Future _getImage({ImageSource source}) async {
-    final pickedFile = await _picker.getImage(source: source);
-    if (pickedFile != null) {
-      File picked = File(pickedFile.path);
-      setState(() {
-        context.read<EditNotifier>().setImage(picked);
-      });
-    }
   }
 }

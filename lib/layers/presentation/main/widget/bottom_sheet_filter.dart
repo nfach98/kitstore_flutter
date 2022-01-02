@@ -2,6 +2,7 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
+import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/brand.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/store_app_button.dart';
@@ -52,164 +53,179 @@ class _BottomSheetFilterState extends State<BottomSheetFilter> {
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Filter",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
+              Container(
+                height: 8,
+                alignment: Alignment.center,
+                width: App.getWidth(context) * .5,
+                decoration: BoxDecoration(
+                  color: colorPrimary,
+                  borderRadius: BorderRadius.circular(32)
                 ),
               ),
               SizedBox(height: 20),
 
-              Text(
-                "Brands",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              ChipsChoice<Brand>.multiple(
-                wrapped: true,
-                spinnerColor: colorPrimary,
-                value: selectedBrands,
-                onChanged: (val) {
-                  setState(() {
-                    selectedBrands = val;
-                    context.read<CatalogueNotifier>().setSelectedBrand(val);
-                  });
-                },
-                choiceAvatarBuilder: (item) {
-                  return Container(
-                    width: 24,
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        child: Image.asset(
-                          item == null
-                            ? "assets/images/no_image.png"
-                            : item.value.image,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    ),
-                  );
-                },
-                choiceItems: C2Choice.listFrom<Brand, Brand>(
-                  source: widget.brands,
-                  value: (i, v) => v,
-                  label: (i, v) => v.name,
-                  style: (id, brand) {
-                    return C2ChoiceStyle(
-                      borderColor: Colors.transparent
-                    );
-                  }
-                ),
-                choiceActiveStyle: C2ChoiceStyle(
-                  color: colorPrimary,
-                  showCheckmark: false,
-                  borderColor: colorPrimary
-                ),
-              ),
-              SizedBox(height: 12),
-
-              Text(
-                "Price Range",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: StoreAppTextField(
-                      controller: _minPriceController,
-                      maxLines: 1,
-                      keyboardType: TextInputType.number,
-                      hintText: "Min",
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text("Rp"),
-                      ),
-                      onChanged: (value) {
-                        context.read<CatalogueNotifier>().setPriceRange(RangeValues(
-                          value.isEmpty ? 0 : double.parse(value),
-                          _maxPriceController.text.isEmpty ? double.maxFinite : double.parse(_maxPriceController.text)
-                        ));
-                      },
+                  Text(
+                    "Filter",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: StoreAppTextField(
-                      controller: _maxPriceController,
-                      maxLines: 1,
-                      keyboardType: TextInputType.number,
-                      hintText: "Max",
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text("Rp"),
-                      ),
-                      onChanged: (value) {
-                        context.read<CatalogueNotifier>().setPriceRange(RangeValues(
-                          _minPriceController.text.isEmpty ? 0 : double.parse(_minPriceController.text),
-                          value.isEmpty ? double.maxFinite : double.parse(value)
-                        ));
-                      },
+                  SizedBox(height: 20),
+
+                  Text(
+                    "Brands",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16,
                     ),
-                  )
+                  ),
+                  ChipsChoice<Brand>.multiple(
+                    wrapped: true,
+                    spinnerColor: colorPrimary,
+                    value: selectedBrands,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedBrands = val;
+                        context.read<CatalogueNotifier>().setSelectedBrand(val);
+                      });
+                    },
+                    choiceAvatarBuilder: (item) {
+                      return Container(
+                        width: 24,
+                        child: AspectRatio(
+                            aspectRatio: 1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(100)),
+                              child: Image.asset(
+                                item == null
+                                    ? "assets/images/no_image.png"
+                                    : item.value.image,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                        ),
+                      );
+                    },
+                    choiceItems: C2Choice.listFrom<Brand, Brand>(
+                        source: widget.brands,
+                        value: (i, v) => v,
+                        label: (i, v) => v.name,
+                        style: (id, brand) {
+                          return C2ChoiceStyle(
+                              borderColor: Colors.transparent
+                          );
+                        }
+                    ),
+                    choiceActiveStyle: C2ChoiceStyle(
+                        color: colorPrimary,
+                        showCheckmark: false,
+                        borderColor: colorPrimary
+                    ),
+                  ),
+                  SizedBox(height: 12),
+
+                  Text(
+                    "Price Range",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: StoreAppTextField(
+                          controller: _minPriceController,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          hintText: "Min",
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Text("Rp"),
+                          ),
+                          onChanged: (value) {
+                            context.read<CatalogueNotifier>().setPriceRange(RangeValues(
+                                value.isEmpty ? 0 : double.parse(value),
+                                _maxPriceController.text.isEmpty ? double.maxFinite : double.parse(_maxPriceController.text)
+                            ));
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: StoreAppTextField(
+                          controller: _maxPriceController,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          hintText: "Max",
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Text("Rp"),
+                          ),
+                          onChanged: (value) {
+                            context.read<CatalogueNotifier>().setPriceRange(RangeValues(
+                                _minPriceController.text.isEmpty ? 0 : double.parse(_minPriceController.text),
+                                value.isEmpty ? double.maxFinite : double.parse(value)
+                            ));
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+
+                  SizedBox(height: 36),
+                  Text(
+                    "Sort",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+
+                  ChipsChoice<String>.single(
+                    wrapped: true,
+                    spinnerColor: colorPrimary,
+                    value: selectedSort,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedSort = val;
+                        context.read<CatalogueNotifier>().setSort(val);
+                      });
+                    },
+                    choiceItems: C2Choice.listFrom<String, String>(
+                        source: widget.sorts,
+                        value: (i, v) => v,
+                        label: (i, v) {
+                          if (v == "p.price DESC") return "Price: High to Low";
+                          return "Price: Low to High";
+                        },
+                        style: (id, brand) {
+                          return C2ChoiceStyle(
+                              borderColor: Colors.transparent
+                          );
+                        }
+                    ),
+                    choiceActiveStyle: C2ChoiceStyle(
+                        color: colorPrimary,
+                        showCheckmark: false,
+                        borderColor: colorPrimary
+                    ),
+                  ),
                 ],
-              ),
-
-              SizedBox(height: 36),
-              Text(
-                "Sort",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-
-              ChipsChoice<String>.single(
-                wrapped: true,
-                spinnerColor: colorPrimary,
-                value: selectedSort,
-                onChanged: (val) {
-                  setState(() {
-                    selectedSort = val;
-                    context.read<CatalogueNotifier>().setSort(val);
-                  });
-                },
-                choiceItems: C2Choice.listFrom<String, String>(
-                  source: widget.sorts,
-                  value: (i, v) => v,
-                  label: (i, v) {
-                    if (v == "p.price DESC") return "Price: High to Low";
-                    return "Price: Low to High";
-                  },
-                  style: (id, brand) {
-                    return C2ChoiceStyle(
-                      borderColor: Colors.transparent
-                    );
-                  }
-                ),
-                choiceActiveStyle: C2ChoiceStyle(
-                  color: colorPrimary,
-                  showCheckmark: false,
-                  borderColor: colorPrimary
-                ),
               ),
 
               SizedBox(height: 20),
