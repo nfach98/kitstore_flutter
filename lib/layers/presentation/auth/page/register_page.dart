@@ -209,7 +209,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (_) => MainPage())
+                                  MaterialPageRoute(builder: (_) => MainPage(
+                                    isDialog: true,
+                                  ))
                                 );
                               }
 

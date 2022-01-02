@@ -10,10 +10,9 @@ import 'package:toast/toast.dart';
 class KitStoreItemGrid extends StatefulWidget {
   final Product product;
   final Function onPressed;
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final Future<int> Function(int, int) onFavoritePressed;
 
-  const KitStoreItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed, this.scaffoldKey}) : super(key: key);
+  const KitStoreItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed}) : super(key: key);
 
   @override
   _KitStoreItemGridState createState() => _KitStoreItemGridState();

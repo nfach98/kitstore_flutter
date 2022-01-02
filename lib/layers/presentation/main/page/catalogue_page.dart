@@ -2,7 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:store_app/core/config/constants.dart';
-import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/brand.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
@@ -175,6 +174,8 @@ class _CataloguePageState extends State<CataloguePage> {
             ),
           ),
           onPressed: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => CartPage())
@@ -274,13 +275,14 @@ class _CataloguePageState extends State<CataloguePage> {
                       return modeView == 0
                         ? KitStoreItemGrid(
                           product: products[index],
-                          scaffoldKey: scaffoldKey,
                           onPressed: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => DetailPage(
-                                  product: products[index],
-                                ))
+                              context,
+                              MaterialPageRoute(builder: (_) => DetailPage(
+                                product: products[index],
+                              ))
                             );
                           },
                           onFavoritePressed: (id, isFavorite) {
@@ -295,6 +297,8 @@ class _CataloguePageState extends State<CataloguePage> {
                         : KitStoreItemList(
                           product: products[index],
                           onPressed: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => DetailPage(

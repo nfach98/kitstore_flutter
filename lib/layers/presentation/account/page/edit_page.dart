@@ -84,52 +84,10 @@ class _EditPageState extends State<EditPage> {
                     padding: EdgeInsets.all(12),
                     child: Column(
                       children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: App.getWidth(context) * .5,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(500)),
-                                  child: image == null
-                                  ? Image.asset(
-                                    user == null || user.avatar == null
-                                      ? "assets/images/no_image.png"
-                                      : user.avatar,
-                                    fit: BoxFit.cover,
-                                  )
-                                  : Image.file(
-                                    image,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              ),
-                            ),
-                            Positioned(
-                              right: 8,
-                              bottom: 8,
-                              child: InkWell(
-                                onTap: () {
-                                  _showPicker();
-                                },
-                                borderRadius: BorderRadius.circular(100),
-                                child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: colorPrimary
-                                  ),
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            )
-                          ],
+                        _buildImage(
+                          user: user,
+                          image: image
                         ),
-
                         SizedBox(height: 20),
 
                         Container(
@@ -199,6 +157,54 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
+  Widget _buildImage({File image, User user}) {
+    return Stack(
+      children: [
+        Container(
+          height: App.getWidth(context) * .5,
+          child: AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(500)),
+                child: image == null
+                  ? Image.asset(
+                      user == null || user.avatar == null
+                        ? "assets/images/no_image.png"
+                        : user.avatar,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.file(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
+              )
+          ),
+        ),
+        Positioned(
+            right: 8,
+            bottom: 8,
+            child: InkWell(
+              onTap: () {
+                _showPicker();
+              },
+              borderRadius: BorderRadius.circular(100),
+              child: Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    color: colorPrimary
+                ),
+                child: Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                ),
+              ),
+            )
+        )
+      ],
+    );
+  }
+
   Widget _buildButtonSave({User user, File image}) {
     return Padding(
       padding: EdgeInsets.all(12.0),
@@ -218,7 +224,6 @@ class _EditPageState extends State<EditPage> {
           loadingDialog.showLoading();
 
           context.read<EditNotifier>().updateUser(
-            id: user.id.toString(),
             name: _nameController.text,
             email: _emailController.text,
             oldAvatar: user.avatar
@@ -414,9 +419,7 @@ class _EditPageState extends State<EditPage> {
     final pickedFile = await _picker.getImage(source: source);
     if (pickedFile != null) {
       File picked = File(pickedFile.path);
-      setState(() {
-        context.read<EditNotifier>().setImage(picked);
-      });
+      context.read<EditNotifier>().setImage(picked);
     }
   }
 }

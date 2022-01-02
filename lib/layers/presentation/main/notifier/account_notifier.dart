@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:store_app/core/usecase/usecase.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
@@ -33,7 +35,7 @@ class AccountNotifier with ChangeNotifier {
     return status;
   }
 
-  Future<void> getLoggedInUser() async {
+  Future<User> getLoggedInUser() async {
     isLoadingUser = true;
     notifyListeners();
 
@@ -48,6 +50,8 @@ class AccountNotifier with ChangeNotifier {
 
     isLoadingUser = false;
     notifyListeners();
+
+    return user;
   }
 
   reset() {

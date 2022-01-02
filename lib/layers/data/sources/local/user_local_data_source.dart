@@ -104,7 +104,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       whereArgs: [user["id"]]
     );
 
-    if (status == user["id"]) {
+    if (status != null) {
       List<Map<String, dynamic>> maps = await dbClient.query('users',
         where: "id = ?",
         whereArgs: [user["id"]]

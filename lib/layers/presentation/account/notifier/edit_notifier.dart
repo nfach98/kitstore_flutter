@@ -42,21 +42,22 @@ class EditNotifier with ChangeNotifier {
     return user;
   }
 
-  Future<int> updateUser({String id, String name, String email, String oldAvatar}) async {
+  Future<int> updateUser({String name, String email, String oldAvatar}) async {
     int status;
     String filename;
 
     if (image != null) {
       Directory appDocDirectory = await getApplicationDocumentsDirectory();
       await Directory(appDocDirectory.path + '/images').create(recursive: true).then((directory) {
-        filename = directory.path + "/${id}_${DateFormat("yyyyMMddHHmmss").format(DateTime.now())}.${image.path.split('.').last}";
+        filename = directory.path + "/${user.id}_${DateFormat("yyyyMMddHHmmss").format(DateTime.now())}.${image.path.split('.').last}";
+        print(filename);
       });
     }
 
     final result = await _updateUserUsecase(UpdateUserParams(
       name: name,
       email: email,
-      avatar: image == null ? null : filename
+      avatar: filename
     ));
 
     result.fold(
@@ -64,8 +65,8 @@ class EditNotifier with ChangeNotifier {
       (success) {
         status = success;
         if (filename != null) {
-          if (oldAvatar != null) {
-            File(oldAvatar).delete(recursive: true);
+          if (oldAvatar != null && oldAvatar.isNotEmpty) {
+            File(oldAvatar).delete();
           }
           image.copy(filename);
         }

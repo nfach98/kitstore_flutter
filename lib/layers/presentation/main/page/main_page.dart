@@ -1,17 +1,20 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
+import 'package:store_app/core/config/globals.dart';
+import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/main_notifier.dart';
 
+import '../../kit_store_button.dart';
+
 class MainPage extends StatefulWidget {
-  const MainPage({Key key}) : super(key: key);
+  final bool isDialog;
+
+  const MainPage({Key key, this.isDialog}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -32,7 +35,13 @@ class _MainPageState extends State<MainPage> {
       context.read<FavoriteNotifier>().getProducts();
 
       context.read<AccountNotifier>().reset();
-      context.read<AccountNotifier>().getLoggedInUser();
+      context.read<AccountNotifier>().getLoggedInUser().then((user) {
+        if (user != null && widget.isDialog != null && widget.isDialog) {
+          _showDialogWelcome(
+            user: user
+          );
+        }
+      });
 
       context.read<CartNotifier>().reset();
       context.read<CartNotifier>().getProducts();
@@ -80,9 +89,53 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  findRoot(FileSystemEntity entity) {
-    final Directory parent = entity.parent;
-    if (parent.path == entity.path) return parent;
-    return findRoot(parent);
+  _showDialogWelcome({User user}) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: EdgeInsets.all(20), // spacing inside the box
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: App.getWidth(context) * .3,
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(500)),
+                    child: Image.asset(
+                      user.avatar == null
+                        ? "assets/images/no_image.png"
+                        : user.avatar,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                ),
+              ),
+              SizedBox(height: 8),
+
+              Text(
+                "Welcome, ${user.name}!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              SizedBox(height: 20),
+
+              KitStoreButton(
+                text: "Start shopping",
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          ),
+        ),
+      )
+    );
   }
 }
