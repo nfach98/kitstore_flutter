@@ -6,9 +6,11 @@ import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/layers/presentation/auth/page/register_page.dart';
 import 'package:store_app/layers/presentation/main/page/main_page.dart';
-import 'package:store_app/layers/presentation/store_app_button.dart';
-import 'package:store_app/layers/presentation/store_app_text_field.dart';
+import 'package:store_app/layers/presentation/kit_store_button.dart';
+import 'package:store_app/layers/presentation/kit_store_text_field.dart';
 import 'package:toast/toast.dart';
+
+import '../../kit_store_loading_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -21,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController;
   TextEditingController _passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  KitStoreLoadingDialog loadingDialog;
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    loadingDialog = KitStoreLoadingDialog(context: context);
   }
 
   @override
@@ -70,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _emailController,
                       maxLines: 1,
                       validator: (value) {
@@ -91,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _passwordController,
                       maxLines: 1,
                       validator: (value) {
@@ -126,18 +130,20 @@ class _LoginPageState extends State<LoginPage> {
                     margin: EdgeInsets.symmetric(horizontal: 12),
                     child: FractionallySizedBox(
                       widthFactor: 1,
-                      child: StoreAppButton(
+                      child: KitStoreButton(
                         text: "Login",
                         onPressed: () {
                           if (formKey.currentState.validate()) {
                             FocusScopeNode currentFocus = FocusScope.of(context);
                             if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+                            loadingDialog.showLoading();
 
                             context.read<LoginNotifier>().login(
                               email: _emailController.text,
                               password: _passwordController.text
                             ).then((user) {
                               if (user != null) {
+                                Navigator.pop(context);
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (_) => MainPage())
@@ -150,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   duration: Toast.LENGTH_LONG,
                                   gravity: Toast.BOTTOM,
+                                  backgroundRadius: 32,
                                   backgroundColor: Colors.red
                                 );
                               }

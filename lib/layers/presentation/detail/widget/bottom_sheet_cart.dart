@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
@@ -8,7 +5,8 @@ import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.dart';
-import 'package:store_app/layers/presentation/store_app_button.dart';
+import 'package:store_app/layers/presentation/kit_store_button.dart';
+import 'package:toast/toast.dart';
 
 
 class BottomSheetCart extends StatefulWidget {
@@ -57,15 +55,15 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
                 SizedBox(height: 20),
 
                 FractionallySizedBox(
-                    widthFactor: 1,
-                    child: _buildQuantity()
+                  widthFactor: 1,
+                  child: _buildQuantity()
                 ),
                 SizedBox(height: 32),
               ],
@@ -73,13 +71,13 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
 
             FractionallySizedBox(
               widthFactor: 1,
-              child: StoreAppButton(
+              child: KitStoreButton(
                 text: "Add to cart",
                 icon: Padding(
                   padding: EdgeInsets.only(right: 8),
                   child: Icon(
                     Icons.shopping_cart,
-                    color: Colors.white,
+                    color: colorAccent,
                   ),
                 ),
                 onPressed: () {
@@ -89,6 +87,15 @@ class _BottomSheetCartState extends State<BottomSheetCart> {
                   ).then((status) {
                     if (status != null) {
                       Navigator.pop(context);
+                      Toast.show(
+                        widget.product.name + " is added to cart",
+                        context,
+                        duration: Toast.LENGTH_LONG,
+                        gravity: Toast.BOTTOM,
+                        backgroundRadius: 32,
+                        textColor: colorPrimary,
+                        backgroundColor: colorAccent
+                      );
                       context.read<CartNotifier>().reset();
                       context.read<CartNotifier>().getProducts();
                     }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,6 +10,9 @@ import 'package:store_app/layers/presentation/cart/widget/item_cart_brand.dart';
 import 'package:store_app/layers/presentation/cart/widget/item_cart_product.dart';
 import 'package:darq/darq.dart';
 import 'package:store_app/layers/presentation/detail/page/detail_page.dart';
+import 'package:store_app/layers/presentation/main/notifier/main_notifier.dart';
+
+import '../../kit_store_button.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key key}) : super(key: key);
@@ -54,7 +55,7 @@ class _CartPageState extends State<CartPage> {
             )
           ),
 
-          if (products != null && selected != null) _buildTotal(
+          if (products != null && selected != null && products.isNotEmpty) _buildTotal(
             products: products,
             selected: selected,
 
@@ -200,6 +201,15 @@ class _CartPageState extends State<CartPage> {
             style: TextStyle(
               fontSize: 16,
             ),
+          ),
+
+          SizedBox(height: 20),
+          KitStoreButton(
+            text: "Start shopping",
+            onPressed: () {
+              Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
+              context.read<MainNotifier>().setSelectedIndex(0);
+            },
           )
         ],
       ),

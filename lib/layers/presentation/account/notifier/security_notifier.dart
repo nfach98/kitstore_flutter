@@ -21,6 +21,9 @@ class SecurityNotifier with ChangeNotifier {
   User user;
   bool isLoadingUser = true;
 
+  bool isHidePassword = true;
+  bool isHideConfirmPassword = true;
+
   Future<User> getLoggedInUser() async {
     isLoadingUser = true;
     notifyListeners();
@@ -58,9 +61,22 @@ class SecurityNotifier with ChangeNotifier {
     return status;
   }
 
+  setHidePassword(bool value) {
+    isHidePassword = value;
+    notifyListeners();
+  }
+
+  setHideConfirmPassword(bool value) {
+    isHideConfirmPassword = value;
+    notifyListeners();
+  }
+
   reset() {
     user = null;
     isLoadingUser = true;
+
+    isHidePassword = true;
+    isHideConfirmPassword = true;
 
     notifyListeners();
   }

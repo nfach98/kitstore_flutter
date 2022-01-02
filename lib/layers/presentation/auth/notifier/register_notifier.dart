@@ -43,6 +43,7 @@ class RegisterNotifier with ChangeNotifier {
 
   reset() {
     isHidePassword = true;
+    isHideConfirmPassword = true;
     notifyListeners();
   }
 }

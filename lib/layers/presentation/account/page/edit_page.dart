@@ -8,11 +8,12 @@ import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
-import 'package:store_app/layers/presentation/account/widget/bottom_sheet_image_picker.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
+import 'package:toast/toast.dart';
 
-import '../../store_app_button.dart';
-import '../../store_app_text_field.dart';
+import '../../kit_store_button.dart';
+import '../../kit_store_loading_dialog.dart';
+import '../../kit_store_text_field.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({Key key}) : super(key: key);
@@ -24,13 +25,15 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   TextEditingController _nameController;
   TextEditingController _emailController;
-  final ImagePicker _picker = ImagePicker();
+  ImagePicker _picker = ImagePicker();
+  KitStoreLoadingDialog loadingDialog;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
     _emailController = TextEditingController();
+    loadingDialog = KitStoreLoadingDialog(context: context);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       context.read<EditNotifier>().reset();
@@ -131,7 +134,7 @@ class _EditPageState extends State<EditPage> {
 
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 12),
-                          child: StoreAppTextField(
+                          child: KitStoreTextField(
                             controller: _nameController,
                             maxLines: 1,
                             validator: (value) {
@@ -149,7 +152,7 @@ class _EditPageState extends State<EditPage> {
 
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 12),
-                          child: StoreAppTextField(
+                          child: KitStoreTextField(
                             controller: _emailController,
                             maxLines: 1,
                             validator: (value) {
@@ -199,7 +202,7 @@ class _EditPageState extends State<EditPage> {
   Widget _buildButtonSave({User user, File image}) {
     return Padding(
       padding: EdgeInsets.all(12.0),
-      child: StoreAppButton(
+      child: KitStoreButton(
         text: "Save changes",
         color: user == null || (user != null && _nameController.text == user.name && _emailController.text == user.email && image == null)
          ? Colors.grey : colorPrimary,
@@ -207,10 +210,13 @@ class _EditPageState extends State<EditPage> {
           padding: EdgeInsets.only(right: 8),
           child: Icon(
             Icons.save,
-            color: Colors.white,
+            color: user == null || (user != null && _nameController.text == user.name && _emailController.text == user.email && image == null)
+              ? Colors.white : colorAccent,
           ),
         ),
         onPressed: () {
+          loadingDialog.showLoading();
+
           context.read<EditNotifier>().updateUser(
             id: user.id.toString(),
             name: _nameController.text,
@@ -221,6 +227,28 @@ class _EditPageState extends State<EditPage> {
               context.read<AccountNotifier>().reset();
               context.read<AccountNotifier>().getLoggedInUser();
               Navigator.pop(context);
+              Navigator.pop(context);
+              Toast.show(
+                "Profile is updated successfully",
+                context,
+                duration: Toast.LENGTH_LONG,
+                gravity: Toast.BOTTOM,
+                backgroundRadius: 32,
+                textColor: colorPrimary,
+                backgroundColor: colorAccent
+              );
+            }
+
+            else {
+              Navigator.pop(context);
+              Toast.show(
+                "Failed to update profile",
+                context,
+                duration: Toast.LENGTH_LONG,
+                gravity: Toast.BOTTOM,
+                backgroundRadius: 32,
+                backgroundColor: Colors.red
+              );
             }
           });
         },
@@ -245,8 +273,67 @@ class _EditPageState extends State<EditPage> {
                     top: Radius.circular(20)
                 ),
               ),
-              child: BottomSheetImagePicker(
-                picker: _picker,
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 8,
+                        alignment: Alignment.center,
+                        width: App.getWidth(context) * .5,
+                        decoration: BoxDecoration(
+                          color: colorPrimary,
+                          borderRadius: BorderRadius.circular(32)
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Choose image from",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          SizedBox(height: 20),
+
+                          Wrap(
+                            children: [
+                              ListTile(
+                                  leading: Icon(
+                                    Icons.photo_library,
+                                    color: colorPrimary,
+                                  ),
+                                  title: Text('Gallery'),
+                                  onTap: () {
+                                    _getImage(source: ImageSource.gallery);
+                                    Navigator.pop(context);
+                                  }
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.photo_camera,
+                                  color: colorPrimary,
+                                ),
+                                title: Text('Camera'),
+                                onTap: () {
+                                  _getImage(source: ImageSource.camera);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               )
             )
           ],
@@ -321,5 +408,15 @@ class _EditPageState extends State<EditPage> {
           ),
         )
     );
+  }
+
+  Future _getImage({ImageSource source}) async {
+    final pickedFile = await _picker.getImage(source: source);
+    if (pickedFile != null) {
+      File picked = File(pickedFile.path);
+      setState(() {
+        context.read<EditNotifier>().setImage(picked);
+      });
+    }
   }
 }

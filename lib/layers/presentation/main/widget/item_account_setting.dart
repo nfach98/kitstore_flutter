@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:store_app/core/config/constants.dart';
 
 class ItemAccountSetting extends StatelessWidget {
   final String text;
@@ -43,7 +44,7 @@ class ItemAccountSetting extends StatelessWidget {
           ),
           Divider(
             height: 1,
-            color: Colors.grey,
+            color: colorAccent,
           )
         ],
       ),

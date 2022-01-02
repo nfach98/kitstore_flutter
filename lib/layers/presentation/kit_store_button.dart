@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class StoreAppButton extends StatelessWidget {
+class KitStoreButton extends StatelessWidget {
   final String text;
   final Widget icon;
   final Function() onPressed;
@@ -11,7 +11,7 @@ class StoreAppButton extends StatelessWidget {
   final double fontSize;
   final EdgeInsets padding;
 
-  const StoreAppButton({Key key,
+  const KitStoreButton({Key key,
     this.text,
     this.onPressed,
     this.color,

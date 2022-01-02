@@ -3,21 +3,22 @@ import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
+import 'package:toast/toast.dart';
 import 'main/notifier/catalogue_notifier.dart';
 import 'main/notifier/favorite_notifier.dart';
 
-class StoreAppItemList extends StatefulWidget {
+class KitStoreItemList extends StatefulWidget {
   final Product product;
   final Function onPressed;
   final Future<int> Function(int, int) onFavoritePressed;
 
-  const StoreAppItemList({Key key, this.onPressed, this.product, this.onFavoritePressed}) : super(key: key);
+  const KitStoreItemList({Key key, this.onPressed, this.product, this.onFavoritePressed}) : super(key: key);
 
   @override
-  _StoreAppItemListState createState() => _StoreAppItemListState();
+  _KitStoreItemListState createState() => _KitStoreItemListState();
 }
 
-class _StoreAppItemListState extends State<StoreAppItemList> {
+class _KitStoreItemListState extends State<KitStoreItemList> {
   int isFavorite = 0;
 
   @override
@@ -59,6 +60,30 @@ class _StoreAppItemListState extends State<StoreAppItemList> {
                       );
                       context.read<FavoriteNotifier>().reset();
                       context.read<FavoriteNotifier>().getProducts();
+
+                      if (isFavorite == 0) {
+                        Toast.show(
+                          widget.product.name + " is added to favorite",
+                          context,
+                          duration: Toast.LENGTH_LONG,
+                          gravity: Toast.BOTTOM,
+                          backgroundRadius: 32,
+                          textColor: colorPrimary,
+                          backgroundColor: colorAccent
+                        );
+                      }
+                      else {
+                        Toast.show(
+                          widget.product.name + " is removed from favorite",
+                          context,
+                          duration: Toast.LENGTH_LONG,
+                          gravity: Toast.BOTTOM,
+                          backgroundRadius: 32,
+                          textColor: colorPrimary,
+                          backgroundColor: colorAccent
+                        );
+                      }
+
                       setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
                     }
                   });

@@ -5,9 +5,9 @@ import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/brand.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
-import 'package:store_app/layers/presentation/store_app_button.dart';
+import 'package:store_app/layers/presentation/kit_store_button.dart';
 
-import '../../store_app_text_field.dart';
+import '../../kit_store_text_field.dart';
 
 class BottomSheetFilter extends StatefulWidget {
   final List<Brand> brands;
@@ -146,7 +146,7 @@ class _BottomSheetFilterState extends State<BottomSheetFilter> {
                   Row(
                     children: [
                       Expanded(
-                        child: StoreAppTextField(
+                        child: KitStoreTextField(
                           controller: _minPriceController,
                           maxLines: 1,
                           keyboardType: TextInputType.number,
@@ -165,7 +165,7 @@ class _BottomSheetFilterState extends State<BottomSheetFilter> {
                       ),
                       SizedBox(width: 12),
                       Expanded(
-                        child: StoreAppTextField(
+                        child: KitStoreTextField(
                           controller: _maxPriceController,
                           maxLines: 1,
                           keyboardType: TextInputType.number,
@@ -255,7 +255,7 @@ class _BottomSheetFilterState extends State<BottomSheetFilter> {
               ),
               FractionallySizedBox(
                 widthFactor: 1,
-                child: StoreAppButton(
+                child: KitStoreButton(
                   text: "Apply filter",
                   onPressed: () {
                     Navigator.pop(context);

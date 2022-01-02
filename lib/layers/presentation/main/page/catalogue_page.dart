@@ -10,12 +10,12 @@ import 'package:store_app/layers/presentation/cart/page/cart_page.dart';
 import 'package:store_app/layers/presentation/detail/page/detail_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/widget/bottom_sheet_filter.dart';
-import 'package:store_app/layers/presentation/store_app_item_grid.dart';
+import 'package:store_app/layers/presentation/kit_store_item_grid.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:provider/provider.dart';
 
-import '../../store_app_item_list.dart';
-import '../../store_app_text_field.dart';
+import '../../kit_store_item_list.dart';
+import '../../kit_store_text_field.dart';
 
 class CataloguePage extends StatefulWidget {
   const CataloguePage({Key key}) : super(key: key);
@@ -27,6 +27,8 @@ class CataloguePage extends StatefulWidget {
 class _CataloguePageState extends State<CataloguePage> {
   TextEditingController _searchController;
   ScrollController _scrollController;
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -70,24 +72,24 @@ class _CataloguePageState extends State<CataloguePage> {
         body: Column(
           children: [
             _buildFilterSort(
-                modeView: modeView,
+              modeView: modeView,
 
-                brands: brands,
-                selectedBrands: selectedBrand,
+              brands: brands,
+              selectedBrands: selectedBrand,
 
-                priceRange: priceRange,
+              priceRange: priceRange,
 
-                sorts: sorts,
-                selectedSort: selectedSort
+              sorts: sorts,
+              selectedSort: selectedSort
             ),
             Expanded(
-                child: _buildList(
-                    modeView: modeView,
+              child: _buildList(
+                modeView: modeView,
 
-                    products: products,
-                    isLoading: isLoadingProduct,
-                    isKeepLoading: isKeepLoadingProduct
-                )
+                products: products,
+                isLoading: isLoadingProduct,
+                isKeepLoading: isKeepLoadingProduct
+              )
             )
           ],
         ),
@@ -99,7 +101,7 @@ class _CataloguePageState extends State<CataloguePage> {
     return AppBar(
       title: Container(
         height: 36,
-        child: StoreAppTextField(
+        child: KitStoreTextField(
           controller: _searchController,
           maxLines: 1,
           keyboardType: TextInputType.text,
@@ -159,7 +161,6 @@ class _CataloguePageState extends State<CataloguePage> {
           icon: cartBadge <= 0
           ? Icon(
             Icons.shopping_cart,
-            color: Colors.white,
           )
           : Badge(
             badgeContent: Text(
@@ -271,8 +272,9 @@ class _CataloguePageState extends State<CataloguePage> {
                   itemBuilder: (_, index) {
                     if (products[index] != null) {
                       return modeView == 0
-                        ? StoreAppItemGrid(
+                        ? KitStoreItemGrid(
                           product: products[index],
+                          scaffoldKey: scaffoldKey,
                           onPressed: () {
                             Navigator.push(
                                 context,
@@ -290,7 +292,7 @@ class _CataloguePageState extends State<CataloguePage> {
                             }
                           },
                         )
-                        : StoreAppItemList(
+                        : KitStoreItemList(
                           product: products[index],
                           onPressed: () {
                             Navigator.push(
@@ -315,10 +317,10 @@ class _CataloguePageState extends State<CataloguePage> {
                       baseColor: Colors.grey[400],
                       highlightColor: Colors.white,
                       child: modeView == 0
-                        ? StoreAppItemGrid(
+                        ? KitStoreItemGrid(
                           onPressed: () { },
                         )
-                        : StoreAppItemList(
+                        : KitStoreItemList(
                           onPressed: () { },
                         ),
                     );

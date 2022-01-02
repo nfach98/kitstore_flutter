@@ -69,7 +69,15 @@ class MyApp extends StatelessWidget {
           primarySwatch: colorPrimary,
           accentColor: colorAccent,
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          fontFamily: 'Poppins'
+          fontFamily: 'Poppins',
+          appBarTheme: AppBarTheme(
+            actionsIconTheme: IconThemeData(
+                color: colorAccent
+            ),
+            iconTheme: IconThemeData(
+              color: colorAccent
+            ),
+          )
         ),
         home: SplashPage(),
         debugShowCheckedModeBanner: false,

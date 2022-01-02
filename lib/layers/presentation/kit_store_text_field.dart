@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class StoreAppTextField extends StatelessWidget {
+class KitStoreTextField extends StatelessWidget {
   final TextEditingController controller;
   final int maxLines;
   final String hintText;
@@ -18,7 +18,7 @@ class StoreAppTextField extends StatelessWidget {
   final InputBorder focusedBorder;
   final Function(String) onChanged;
 
-  const StoreAppTextField({Key key, this.controller, this.hintText, this.keyboardType, this.validator, this.maxLines, this.obscureText, this.prefixIcon, this.suffixIcon, this.onChanged, this.contentPadding, this.fillColor, this.style, this.border, this.enabledBorder, this.focusedBorder, this.labelText}) : super(key: key);
+  const KitStoreTextField({Key key, this.controller, this.hintText, this.keyboardType, this.validator, this.maxLines, this.obscureText, this.prefixIcon, this.suffixIcon, this.onChanged, this.contentPadding, this.fillColor, this.style, this.border, this.enabledBorder, this.focusedBorder, this.labelText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

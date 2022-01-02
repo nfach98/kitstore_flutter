@@ -5,9 +5,9 @@ import 'package:store_app/layers/presentation/detail/page/detail_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/layers/presentation/main/notifier/main_notifier.dart';
-import 'package:store_app/layers/presentation/store_app_button.dart';
+import 'package:store_app/layers/presentation/kit_store_button.dart';
 
-import '../../store_app_item_list.dart';
+import '../../kit_store_item_list.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({Key key}) : super(key: key);
@@ -69,7 +69,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 itemCount: products.length,
                 itemBuilder: (_, index) {
                   if (products[index] != null) {
-                    return StoreAppItemList(
+                    return KitStoreItemList(
                       product: products[index],
                       onPressed: () {
                         Navigator.push(
@@ -93,7 +93,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   return Shimmer.fromColors(
                     baseColor: Colors.grey[400],
                     highlightColor: Colors.white,
-                    child: StoreAppItemList(
+                    child: KitStoreItemList(
                       onPressed: () { },
                     ),
                   );
@@ -128,8 +128,8 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
 
           SizedBox(height: 20),
-          StoreAppButton(
-            text: "Search your favorite here",
+          KitStoreButton(
+            text: "Search your favorite",
             onPressed: () {
               context.read<MainNotifier>().setSelectedIndex(0);
             },

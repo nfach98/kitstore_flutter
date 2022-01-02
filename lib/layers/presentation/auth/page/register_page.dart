@@ -7,8 +7,9 @@ import 'package:store_app/layers/presentation/auth/notifier/register_notifier.da
 import 'package:store_app/layers/presentation/main/page/main_page.dart';
 import 'package:toast/toast.dart';
 
-import '../../store_app_button.dart';
-import '../../store_app_text_field.dart';
+import '../../kit_store_button.dart';
+import '../../kit_store_loading_dialog.dart';
+import '../../kit_store_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key key}) : super(key: key);
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _passwordController;
   TextEditingController _confirmPasswordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  KitStoreLoadingDialog loadingDialog;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    loadingDialog = KitStoreLoadingDialog(context: context);
   }
 
   @override
@@ -48,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    var appBarHeight = _buildAppBar().preferredSize.height;
+    final appBarHeight = _buildAppBar().preferredSize.height;
     final isHidePassword = context.select((RegisterNotifier n) => n.isHidePassword);
     final isHideConfirmPassword = context.select((RegisterNotifier n) => n.isHideConfirmPassword);
 
@@ -79,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _nameController,
                       maxLines: 1,
                       validator: (value) {
@@ -97,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _emailController,
                       maxLines: 1,
                       validator: (value) {
@@ -118,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _passwordController,
                       maxLines: 1,
                       validator: (value) {
@@ -151,7 +154,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 12),
-                    child: StoreAppTextField(
+                    child: KitStoreTextField(
                       controller: _confirmPasswordController,
                       maxLines: 1,
                       validator: (value) {
@@ -189,12 +192,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     margin: EdgeInsets.symmetric(horizontal: 12),
                     child: FractionallySizedBox(
                       widthFactor: 1,
-                      child: StoreAppButton(
+                      child: KitStoreButton(
                         text: "Register",
                         onPressed: () {
                           if (formKey.currentState.validate()) {
                             FocusScopeNode currentFocus = FocusScope.of(context);
                             if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+                            loadingDialog.showLoading();
 
                             context.read<RegisterNotifier>().register(
                               name: _nameController.text,
@@ -202,19 +206,21 @@ class _RegisterPageState extends State<RegisterPage> {
                               password: _passwordController.text
                             ).then((status) {
                               if (status != null) {
-                                Navigator.pop(context);
+                                Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
                                 Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => MainPage())
+                                  context,
+                                  MaterialPageRoute(builder: (_) => MainPage())
                                 );
                               }
 
                               else {
+                                Navigator.pop(context);
                                 Toast.show(
                                   "Failed to register",
                                   context,
                                   duration: Toast.LENGTH_LONG,
                                   gravity: Toast.BOTTOM,
+                                  backgroundRadius: 32,
                                   backgroundColor: Colors.red
                                 );
                               }

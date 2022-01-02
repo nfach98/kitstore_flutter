@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
@@ -8,10 +6,11 @@ import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/page/about_page.dart';
 import 'package:store_app/layers/presentation/account/page/edit_page.dart';
 import 'package:store_app/layers/presentation/account/page/security_page.dart';
-import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/layers/presentation/auth/page/login_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 import 'package:store_app/layers/presentation/main/widget/item_account_setting.dart';
+
+import '../../kit_store_loading_dialog.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key key}) : super(key: key);
@@ -21,6 +20,14 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  KitStoreLoadingDialog loadingDialog;
+
+  @override
+  void initState() {
+    super.initState();
+    loadingDialog = KitStoreLoadingDialog(context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = context.select((AccountNotifier n) => n.user);
@@ -197,6 +204,8 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                     onPressed: () {
+                      Navigator.pop(context);
+                      loadingDialog.showLoading();
                       context.read<AccountNotifier>().logout().then((status) {
                         if (status) {
                           Navigator.pop(context);

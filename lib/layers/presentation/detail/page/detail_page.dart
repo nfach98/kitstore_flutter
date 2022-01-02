@@ -7,7 +7,7 @@ import 'package:store_app/layers/presentation/detail/notifier/detail_notifier.da
 import 'package:store_app/layers/presentation/detail/widget/bottom_sheet_cart.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
-import 'package:store_app/layers/presentation/store_app_button.dart';
+import 'package:store_app/layers/presentation/kit_store_button.dart';
 
 class DetailPage extends StatefulWidget {
   final Product product;
@@ -199,13 +199,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildAddToCart() {
-    return StoreAppButton(
+    return KitStoreButton(
       text: "Add to cart",
       icon: Padding(
         padding: EdgeInsets.only(right: 8),
         child: Icon(
           Icons.shopping_cart,
-          color: Colors.white,
+          color: colorAccent,
         ),
       ),
       onPressed: () {

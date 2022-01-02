@@ -87,9 +87,7 @@ class _BottomSheetImagePickerState extends State<BottomSheetImagePicker> {
     final pickedFile = await widget.picker.getImage(source: source);
     if (pickedFile != null) {
       File picked = File(pickedFile.path);
-      setState(() {
-        context.read<EditNotifier>().setImage(picked);
-      });
+      context.read<EditNotifier>().setImage(picked);
     }
   }
 }

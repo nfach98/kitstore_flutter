@@ -5,19 +5,21 @@ import 'package:store_app/layers/domain/entities/product.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
-class StoreAppItemGrid extends StatefulWidget {
+class KitStoreItemGrid extends StatefulWidget {
   final Product product;
   final Function onPressed;
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final Future<int> Function(int, int) onFavoritePressed;
 
-  const StoreAppItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed}) : super(key: key);
+  const KitStoreItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed, this.scaffoldKey}) : super(key: key);
 
   @override
-  _StoreAppItemGridState createState() => _StoreAppItemGridState();
+  _KitStoreItemGridState createState() => _KitStoreItemGridState();
 }
 
-class _StoreAppItemGridState extends State<StoreAppItemGrid> {
+class _KitStoreItemGridState extends State<KitStoreItemGrid> {
   int isFavorite = 0;
 
   @override
@@ -63,6 +65,30 @@ class _StoreAppItemGridState extends State<StoreAppItemGrid> {
                         );
                         context.read<FavoriteNotifier>().reset();
                         context.read<FavoriteNotifier>().getProducts();
+
+                        if (isFavorite == 0) {
+                          Toast.show(
+                            widget.product.name + " is added to favorite",
+                            context,
+                            duration: Toast.LENGTH_LONG,
+                            gravity: Toast.BOTTOM,
+                            backgroundRadius: 32,
+                            textColor: colorPrimary,
+                            backgroundColor: colorAccent
+                          );
+                        }
+                        else {
+                          Toast.show(
+                            widget.product.name + " is removed from favorite",
+                            context,
+                            duration: Toast.LENGTH_LONG,
+                            gravity: Toast.BOTTOM,
+                            backgroundRadius: 32,
+                            textColor: colorPrimary,
+                            backgroundColor: colorAccent
+                          );
+                        }
+
                         setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
                       }
                     });
