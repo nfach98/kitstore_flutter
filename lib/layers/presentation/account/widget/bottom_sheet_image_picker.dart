@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
-import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/profile_notifier.dart';
 
 class BottomSheetImagePicker extends StatefulWidget {
   final ImagePicker picker;
@@ -87,7 +87,7 @@ class _BottomSheetImagePickerState extends State<BottomSheetImagePicker> {
     final pickedFile = await widget.picker.getImage(source: source);
     if (pickedFile != null) {
       File picked = File(pickedFile.path);
-      context.read<EditNotifier>().setImage(picked);
+      context.read<ProfileNotifier>().setImage(picked);
     }
   }
 }

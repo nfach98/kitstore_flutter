@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
-import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/profile_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
 import 'package:toast/toast.dart';
 
@@ -15,14 +15,14 @@ import '../../kit_store_button.dart';
 import '../../kit_store_loading_dialog.dart';
 import '../../kit_store_text_field.dart';
 
-class EditPage extends StatefulWidget {
-  const EditPage({Key key}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key key}) : super(key: key);
 
   @override
-  _EditPageState createState() => _EditPageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _EditPageState extends State<EditPage> {
+class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _nameController;
   TextEditingController _emailController;
   ImagePicker _picker = ImagePicker();
@@ -36,8 +36,8 @@ class _EditPageState extends State<EditPage> {
     loadingDialog = KitStoreLoadingDialog(context: context);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      context.read<EditNotifier>().reset();
-      context.read<EditNotifier>().getLoggedInUser().then((user) {
+      context.read<ProfileNotifier>().reset();
+      context.read<ProfileNotifier>().getLoggedInUser().then((user) {
         if (user != null) {
           _nameController.text = user.name;
           _emailController.text = user.email;
@@ -56,8 +56,8 @@ class _EditPageState extends State<EditPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((EditNotifier n) => n.user);
-    final image = context.select((EditNotifier n) => n.image);
+    final user = context.select((ProfileNotifier n) => n.user);
+    final image = context.select((ProfileNotifier n) => n.image);
 
     return WillPopScope(
       onWillPop: () async {
@@ -223,7 +223,7 @@ class _EditPageState extends State<EditPage> {
         onPressed: () {
           loadingDialog.showLoading();
 
-          context.read<EditNotifier>().updateUser(
+          context.read<ProfileNotifier>().updateUser(
             name: _nameController.text,
             email: _emailController.text,
             oldAvatar: user.avatar
@@ -419,7 +419,7 @@ class _EditPageState extends State<EditPage> {
     final pickedFile = await _picker.getImage(source: source);
     if (pickedFile != null) {
       File picked = File(pickedFile.path);
-      context.read<EditNotifier>().setImage(picked);
+      context.read<ProfileNotifier>().setImage(picked);
     }
   }
 }

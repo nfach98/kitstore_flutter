@@ -8,11 +8,11 @@ import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/domain/usecases/user/get_logged_in_user_usecase.dart';
 import 'package:store_app/layers/domain/usecases/user/update_user_usecase.dart';
 
-class EditNotifier with ChangeNotifier {
+class ProfileNotifier with ChangeNotifier {
   final GetLoggedInUserUsecase _loggedInUserUsecase;
   final UpdateUserUsecase _updateUserUsecase;
 
-  EditNotifier({
+  ProfileNotifier({
     @required GetLoggedInUserUsecase loggedInUserUsecase,
     @required UpdateUserUsecase updateUserUsecase,
   }) : _loggedInUserUsecase = loggedInUserUsecase,
@@ -44,31 +44,30 @@ class EditNotifier with ChangeNotifier {
 
   Future<int> updateUser({String name, String email, String oldAvatar}) async {
     int status;
-    String filename;
+    String avatar;
 
     if (image != null) {
       Directory appDocDirectory = await getApplicationDocumentsDirectory();
       await Directory(appDocDirectory.path + '/images').create(recursive: true).then((directory) {
-        filename = directory.path + "/${user.id}_${DateFormat("yyyyMMddHHmmss").format(DateTime.now())}.${image.path.split('.').last}";
-        print(filename);
+        avatar = directory.path + "/${user.id}_${DateFormat("yyyyMMddHHmmss").format(DateTime.now())}.${image.path.split('.').last}";
       });
     }
 
     final result = await _updateUserUsecase(UpdateUserParams(
       name: name,
       email: email,
-      avatar: filename
+      avatar: avatar
     ));
 
     result.fold(
       (error) { },
       (success) {
         status = success;
-        if (filename != null) {
+        if (avatar != null) {
           if (oldAvatar != null && oldAvatar.isNotEmpty) {
             File(oldAvatar).delete();
           }
-          image.copy(filename);
+          image.copy(avatar);
         }
       }
     );

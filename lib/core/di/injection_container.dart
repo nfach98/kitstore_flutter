@@ -23,7 +23,7 @@ import 'package:store_app/layers/domain/usecases/user/logout_usecase.dart';
 import 'package:store_app/layers/domain/usecases/user/register_usecase.dart';
 import 'package:store_app/layers/domain/usecases/user/update_user_usecase.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
-import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/profile_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/register_notifier.dart';
@@ -67,7 +67,7 @@ Future<void> init() async {
 
   // Account
   sl.registerFactory(() => AboutNotifier());
-  sl.registerFactory(() => EditNotifier(
+  sl.registerFactory(() => ProfileNotifier(
     loggedInUserUsecase: sl(),
     updateUserUsecase: sl()
   ));

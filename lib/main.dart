@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/layers/presentation/account/notifier/about_notifier.dart';
-import 'package:store_app/layers/presentation/account/notifier/edit_notifier.dart';
+import 'package:store_app/layers/presentation/account/notifier/profile_notifier.dart';
 import 'package:store_app/layers/presentation/account/notifier/security_notifier.dart';
 import 'package:store_app/layers/presentation/auth/notifier/login_notifier.dart';
 import 'package:store_app/core/di/injection_container.dart' as di;
@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AboutNotifier>(
           create: (_) => di.sl<AboutNotifier>(),
         ),
-        ChangeNotifierProvider<EditNotifier>(
-          create: (_) => di.sl<EditNotifier>(),
+        ChangeNotifierProvider<ProfileNotifier>(
+          create: (_) => di.sl<ProfileNotifier>(),
         ),
         ChangeNotifierProvider<SecurityNotifier>(
           create: (_) => di.sl<SecurityNotifier>(),

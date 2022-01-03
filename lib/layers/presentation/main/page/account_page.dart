@@ -4,7 +4,7 @@ import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/user.dart';
 import 'package:store_app/layers/presentation/account/page/about_page.dart';
-import 'package:store_app/layers/presentation/account/page/edit_page.dart';
+import 'package:store_app/layers/presentation/account/page/profile_page.dart';
 import 'package:store_app/layers/presentation/account/page/security_page.dart';
 import 'package:store_app/layers/presentation/auth/page/login_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/account_notifier.dart';
@@ -49,7 +49,7 @@ class _AccountPageState extends State<AccountPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => EditPage())
+                    MaterialPageRoute(builder: (_) => ProfilePage())
                   );
                 },
               ),
