@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_app/core/sqlite/sqlite_helper.dart';
@@ -137,8 +135,9 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     }
 
     List<Map<String, dynamic>> maps = await dbClient.rawQuery("""
-      SELECT p.id, p.id_brand, p.name, p.image, p.price, cp.qty, cp.is_selected FROM cart_products cp
+      SELECT p.id, p.id_brand, p.name, p.image, p.price, cp.qty, cp.is_selected, (CASE WHEN fp.is_favorite IS NULL THEN 0 ELSE fp.is_favorite END) AS is_favorite FROM cart_products cp
       INNER JOIN products p ON p.id = cp.id_product
+      LEFT JOIN favorite_products fp ON p.id = fp.id_product AND fp.id_user = ${user["id"]}
       WHERE cp.id_user = ${user["id"]}
       ORDER BY cp.id DESC
     """);

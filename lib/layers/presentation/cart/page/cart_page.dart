@@ -117,7 +117,7 @@ class _CartPageState extends State<CartPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (_) => DetailPage(
-                                    product: products[index],
+                                    product: prod[index],
                                   ))
                                 );
                               },

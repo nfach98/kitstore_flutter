@@ -104,18 +104,17 @@ class _DetailPageState extends State<DetailPage> {
           ),
           onPressed: () {
             if (widget.product != null) {
-              var future;
+              Future<int> future;
 
               if (widget.product.isFavorite == 0) {
                 future = context.read<DetailNotifier>().addFavorite(id: widget.product.id.toString());
               }
-              else {
+              else if (widget.product.isFavorite == 1) {
                 future = context.read<DetailNotifier>().deleteFavorite(id: widget.product.id.toString());
               }
 
               future.then((status) {
-                print(status);
-                if (status != null) {
+                if (status != null && status != 0) {
                   context.read<CatalogueNotifier>().updateProduct(
                     id: widget.product.id,
                     isFavorite: isFavorite == 1 ? 0 : 1
