@@ -8,8 +8,10 @@ import 'package:store_app/layers/presentation/cart/notifier/cart_notifier.dart';
 import 'package:store_app/layers/presentation/cart/page/cart_page.dart';
 import 'package:store_app/layers/presentation/detail/page/detail_page.dart';
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
+import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:store_app/layers/presentation/main/widget/bottom_sheet_filter.dart';
 import 'package:store_app/layers/presentation/kit_store_item_grid.dart';
+import 'package:toast/toast.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:provider/provider.dart';
 
@@ -275,6 +277,7 @@ class _CataloguePageState extends State<CataloguePage> {
                       return modeView == 0
                         ? KitStoreItemGrid(
                           product: products[index],
+                          isFavorite: products[index].isFavorite,
                           onPressed: () {
                             FocusScopeNode currentFocus = FocusScope.of(context);
                             if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
@@ -286,12 +289,50 @@ class _CataloguePageState extends State<CataloguePage> {
                             );
                           },
                           onFavoritePressed: (id, isFavorite) {
+                            Future<int> future;
+
                             if (isFavorite == 0) {
-                              return context.read<CatalogueNotifier>().addFavorite(id: id.toString());
+                              future = context.read<CatalogueNotifier>().addFavorite(id: id.toString());
                             }
                             else {
-                              return context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
+                              future = context.read<CatalogueNotifier>().deleteFavorite(id: id.toString());
                             }
+
+                            future.then((status) {
+                              if (status != null) {
+                                context.read<CatalogueNotifier>().updateProduct(
+                                  id: id,
+                                  isFavorite: isFavorite == 1 ? 0 : 1
+                                );
+                                context.read<FavoriteNotifier>().reset();
+                                context.read<FavoriteNotifier>().getProducts();
+
+                                if (isFavorite == 0) {
+                                  Toast.show(
+                                    products[index].name + " is added to favorite",
+                                    context,
+                                    duration: Toast.LENGTH_LONG,
+                                    gravity: Toast.BOTTOM,
+                                    backgroundRadius: 32,
+                                    textColor: colorPrimary,
+                                    backgroundColor: colorAccent
+                                  );
+                                }
+                                else {
+                                  Toast.show(
+                                    products[index].name + " is removed from favorite",
+                                    context,
+                                    duration: Toast.LENGTH_LONG,
+                                    gravity: Toast.BOTTOM,
+                                    backgroundRadius: 32,
+                                    textColor: colorPrimary,
+                                    backgroundColor: colorAccent
+                                  );
+                                }
+
+                                setState(() => isFavorite = isFavorite == 1 ? 0 :1);
+                              }
+                            });
                           },
                         )
                         : KitStoreItemList(

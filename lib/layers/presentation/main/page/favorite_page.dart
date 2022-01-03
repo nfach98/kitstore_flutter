@@ -129,7 +129,7 @@ class _FavoritePageState extends State<FavoritePage> {
 
           SizedBox(height: 20),
           KitStoreButton(
-            text: "Search your favorite",
+            text: "Find your favorite",
             onPressed: () {
               context.read<MainNotifier>().setSelectedIndex(0);
             },

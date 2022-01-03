@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:store_app/core/config/constants.dart';
 import 'package:store_app/core/config/globals.dart';
 import 'package:store_app/layers/domain/entities/product.dart';
-import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
-import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
-import 'package:provider/provider.dart';
-import 'package:toast/toast.dart';
 
 class KitStoreItemGrid extends StatefulWidget {
   final Product product;
+  final int isFavorite;
   final Function onPressed;
-  final Future<int> Function(int, int) onFavoritePressed;
+  final Function(int, int) onFavoritePressed;
 
-  const KitStoreItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed}) : super(key: key);
+  const KitStoreItemGrid({Key key, this.onPressed, this.product, this.onFavoritePressed, this.isFavorite}) : super(key: key);
 
   @override
   _KitStoreItemGridState createState() => _KitStoreItemGridState();
@@ -24,13 +21,17 @@ class _KitStoreItemGridState extends State<KitStoreItemGrid> {
   @override
   void initState() {
     super.initState();
-    if (widget.product != null) {
-      isFavorite = widget.product.isFavorite;
-    }
+    // if (widget.product != null) {
+    //   isFavorite = widget.product.isFavorite;
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isFavorite != null) {
+      isFavorite = widget.isFavorite;
+    }
+
     return GestureDetector(
       onTap: widget.onPressed ?? () { },
       child: Container(
@@ -55,42 +56,43 @@ class _KitStoreItemGridState extends State<KitStoreItemGrid> {
                   color: isFavorite == 1 ? Colors.pink : Colors.grey,
                 ),
                 onPressed: () {
-                  if (widget.product != null) {
-                    widget.onFavoritePressed(widget.product.id, widget.product.isFavorite).then((status) {
-                      if (status != null) {
-                        context.read<CatalogueNotifier>().updateProduct(
-                          id: widget.product.id,
-                          isFavorite: isFavorite == 1 ? 0 : 1
-                        );
-                        context.read<FavoriteNotifier>().reset();
-                        context.read<FavoriteNotifier>().getProducts();
-
-                        if (isFavorite == 0) {
-                          Toast.show(
-                            widget.product.name + " is added to favorite",
-                            context,
-                            duration: Toast.LENGTH_LONG,
-                            gravity: Toast.BOTTOM,
-                            backgroundRadius: 32,
-                            textColor: colorPrimary,
-                            backgroundColor: colorAccent
-                          );
-                        }
-                        else {
-                          Toast.show(
-                            widget.product.name + " is removed from favorite",
-                            context,
-                            duration: Toast.LENGTH_LONG,
-                            gravity: Toast.BOTTOM,
-                            backgroundRadius: 32,
-                            textColor: colorPrimary,
-                            backgroundColor: colorAccent
-                          );
-                        }
-
-                        setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
-                      }
-                    });
+                  if (widget.product != null && widget.onFavoritePressed != null) {
+                    widget.onFavoritePressed(widget.product.id, widget.product.isFavorite);
+                    // widget.onFavoritePressed(widget.product.id, widget.product.isFavorite).then((status) {
+                    //   if (status != null) {
+                    //     context.read<CatalogueNotifier>().updateProduct(
+                    //       id: widget.product.id,
+                    //       isFavorite: isFavorite == 1 ? 0 : 1
+                    //     );
+                    //     context.read<FavoriteNotifier>().reset();
+                    //     context.read<FavoriteNotifier>().getProducts();
+                    //
+                    //     if (isFavorite == 0) {
+                    //       Toast.show(
+                    //         widget.product.name + " is added to favorite",
+                    //         context,
+                    //         duration: Toast.LENGTH_LONG,
+                    //         gravity: Toast.BOTTOM,
+                    //         backgroundRadius: 32,
+                    //         textColor: colorPrimary,
+                    //         backgroundColor: colorAccent
+                    //       );
+                    //     }
+                    //     else {
+                    //       Toast.show(
+                    //         widget.product.name + " is removed from favorite",
+                    //         context,
+                    //         duration: Toast.LENGTH_LONG,
+                    //         gravity: Toast.BOTTOM,
+                    //         backgroundRadius: 32,
+                    //         textColor: colorPrimary,
+                    //         backgroundColor: colorAccent
+                    //       );
+                    //     }
+                    //
+                    //     setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
+                    //   }
+                    // });
                   }
                 },
               )

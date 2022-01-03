@@ -8,6 +8,7 @@ import 'package:store_app/layers/presentation/detail/widget/bottom_sheet_cart.da
 import 'package:store_app/layers/presentation/main/notifier/catalogue_notifier.dart';
 import 'package:store_app/layers/presentation/main/notifier/favorite_notifier.dart';
 import 'package:store_app/layers/presentation/kit_store_button.dart';
+import 'package:toast/toast.dart';
 
 class DetailPage extends StatefulWidget {
   final Product product;
@@ -113,6 +114,7 @@ class _DetailPageState extends State<DetailPage> {
               }
 
               future.then((status) {
+                print(status);
                 if (status != null) {
                   context.read<CatalogueNotifier>().updateProduct(
                     id: widget.product.id,
@@ -120,6 +122,28 @@ class _DetailPageState extends State<DetailPage> {
                   );
                   context.read<FavoriteNotifier>().reset();
                   context.read<FavoriteNotifier>().getProducts();
+                  if (isFavorite == 0) {
+                    Toast.show(
+                      widget.product.name + " is added to favorite",
+                      context,
+                      duration: Toast.LENGTH_LONG,
+                      gravity: Toast.BOTTOM,
+                      backgroundRadius: 32,
+                      textColor: colorPrimary,
+                      backgroundColor: colorAccent
+                    );
+                  }
+                  else {
+                    Toast.show(
+                      widget.product.name + " is removed from favorite",
+                      context,
+                      duration: Toast.LENGTH_LONG,
+                      gravity: Toast.BOTTOM,
+                      backgroundRadius: 32,
+                      textColor: colorPrimary,
+                      backgroundColor: colorAccent
+                    );
+                  }
                   setState(() => isFavorite = isFavorite == 1 ? 0 : 1);
                 }
               });

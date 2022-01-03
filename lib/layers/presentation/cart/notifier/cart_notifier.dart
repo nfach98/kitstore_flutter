@@ -177,8 +177,7 @@ class CartNotifier with ChangeNotifier {
   }
 
   addAll() {
-    List<int> list = List.from(listSelected);
-    list.addAll(listProduct.map((e) => e.id).toList());
+    List<int> list = listProduct.map((e) => e.id).toList();
     listSelected = list;
     setGrandTotal();
 

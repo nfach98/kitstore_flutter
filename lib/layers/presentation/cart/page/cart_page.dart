@@ -104,18 +104,6 @@ class _CartPageState extends State<CartPage> {
                         ItemCartBrand(
                           brand: brands[index],
                           isSelected: brandSelected.length == prod.length,
-                          // onChanged: (value) {
-                          //   context.read<CartNotifier>().updateCart(
-                          //     idBrand: brands[index].id.toString(),
-                          //     isSelected: value,
-                          //   );
-                          //   if (value) {
-                          //     context.read<CartNotifier>().addSelectedBrand(brands[index].id);
-                          //   }
-                          //   else {
-                          //     context.read<CartNotifier>().removeSelectedBrand(brands[index].id);
-                          //   }
-                          // },
                         ),
                         ListView.separated(
                           shrinkWrap: true,
